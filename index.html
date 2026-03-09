@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tzu Chi Bukit Batok Gym Tonic</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --jade:#1a5c45;--jade2:#2a7a5e;--jade3:#0f3d2e;
+  --gold:#c8a84b;--gold2:#e8c96b;
+  --navy:#0d1b2e;--navy2:#1a2f4a;--navy3:#243650;
+  --cream:#f8f4ed;--cream2:#ede8df;
+  --red:#c0392b;--green:#27ae60;--orange:#e67e22;
+  --shadow:0 4px 20px rgba(0,0,0,0.12);
+  --shadow2:0 8px 32px rgba(0,0,0,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--navy);min-height:100vh;padding-bottom:80px}
+nav{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:0 14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,0.3)}
+.nav-inner{max-width:600px;margin:auto;display:flex;align-items:center;justify-content:space-between;height:62px;gap:8px}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{height:44px;width:44px;object-fit:contain;filter:brightness(0) invert(1);display:block}
+.nav-txt{display:none}
+@media(min-width:380px){.nav-txt{display:block}}
+.nav-txt .t1{font-family:'Playfair Display',serif;font-size:12.5px;color:var(--gold2);line-height:1.2}
+.nav-txt .t2{font-size:11px;color:rgba(255,255,255,0.6);line-height:1.2}
+.nav-btns{display:flex;gap:5px}
+.nbtn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);color:white;padding:6px 11px;border-radius:20px;cursor:pointer;font-size:12px;font-family:'Nunito',sans-serif;font-weight:600;transition:all .2s}
+.nbtn:hover{background:rgba(200,168,75,0.3);border-color:var(--gold)}
+.nbtn.active{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.rules-toggle-btn{background:linear-gradient(90deg,var(--jade2),var(--jade));color:white;border:none;width:100%;padding:9px;font-family:'Nunito',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+#rules-banner{background:linear-gradient(135deg,var(--jade3),var(--jade));color:white;overflow:hidden;max-height:0;transition:max-height .4s ease}
+#rules-banner.open{max-height:700px}
+.rules-inner{max-width:600px;margin:auto;padding:16px 14px}
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.rule-card{background:rgba(255,255,255,0.12);border-radius:10px;padding:10px 12px}
+.rule-icon{font-size:18px;margin-bottom:3px}
+.rule-title{font-weight:800;font-size:12px;color:var(--gold2);margin-bottom:3px}
+.rule-text{font-size:11.5px;line-height:1.5;opacity:.92}
+#ann-bar{background:linear-gradient(90deg,#a07820,var(--gold));color:var(--navy);padding:8px 14px;text-align:center;font-size:13px;font-weight:700;display:none}
+main{max-width:600px;margin:0 auto;padding:14px}
+.config-warn{background:#fff3cd;border:2px solid var(--gold);border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px}
+.config-warn strong{color:#856404;display:block;margin-bottom:5px}
+.config-warn code{background:rgba(0,0,0,.08);padding:1px 5px;border-radius:4px;font-size:12px}
+.hero{background:linear-gradient(160deg,var(--navy),var(--navy2),var(--navy3));color:white;border-radius:14px;padding:26px 20px;margin-bottom:16px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%, rgba(200,168,75,.08) 0%, transparent 60%)}
+.hero-logo{height:72px;width:auto;object-fit:contain;margin-bottom:12px;filter:brightness(0) invert(1);position:relative;display:block;margin-left:auto;margin-right:auto}
+.hero h1{font-family:'Playfair Display',serif;font-size:21px;color:var(--gold2);line-height:1.35;position:relative}
+.hero p{font-size:13px;opacity:.7;margin-top:6px;position:relative}
+.card{background:white;border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--jade3);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--cream2)}
+label{display:block;font-size:12.5px;font-weight:800;color:#5a6478;margin:11px 0 4px}
+label:first-child{margin-top:0}
+select,input[type=text],input[type=password],input[type=date]{width:100%;padding:11px 13px;border:2px solid var(--cream2);border-radius:8px;font-family:'Nunito',sans-serif;font-size:14px;background:var(--cream);color:var(--navy);outline:none;transition:border-color .2s}
+select:focus,input:focus{border-color:var(--jade)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border:none;border-radius:8px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;transition:all .2s;width:100%}
+.btn-jade{background:var(--jade);color:white}
+.btn-jade:hover{background:var(--jade3);transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,92,69,.35)}
+.btn-red{background:var(--red);color:white}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:var(--gold2)}
+.btn-outline{background:transparent;border:2px solid var(--jade);color:var(--jade)}
+.btn-sm{padding:5px 10px;font-size:12px;width:auto;border-radius:6px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none !important}
+.tabs{display:flex;background:white;border-radius:12px;padding:4px;gap:3px;margin-bottom:16px;box-shadow:var(--shadow)}
+.tab-btn{flex:1;padding:9px 4px;border:none;background:transparent;border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#7a8499;transition:all .25s}
+.tab-btn.active{background:var(--jade);color:white;box-shadow:0 2px 10px rgba(26,92,69,.35)}
+.week-row{display:flex;gap:8px;margin-bottom:14px}
+.wbtn{flex:1;padding:9px;border:2px solid var(--cream2);background:white;border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;transition:all .2s;color:#7a8499}
+.wbtn.active{border-color:var(--jade);background:var(--jade);color:white}
+.mstrip{background:linear-gradient(135deg,var(--jade3),var(--jade2));color:white;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.mavatar{width:44px;height:44px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);font-weight:700;flex-shrink:0}
+.minfo{flex:1}
+.minfo h3{font-size:15px;font-weight:800}
+.minfo .mtype{font-size:11px;opacity:.75;margin-top:2px}
+.mia-dots{display:flex;gap:4px;margin-top:5px}
+.mia-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.25)}
+.mia-dot.used{background:#ff6b6b}
+.balcard{background:linear-gradient(135deg,var(--navy2),var(--navy));color:white;border-radius:12px;padding:14px 12px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px}
+.balitem{text-align:center;padding:4px 2px;border-right:1px solid rgba(255,255,255,.1)}
+.balitem:last-child{border-right:none}
+.balnum{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold2);line-height:1}
+.ballabel{font-size:10px;opacity:.7;margin-top:3px;line-height:1.3}
+.day-block{margin-bottom:16px}
+.day-hdr{background:var(--jade3);color:var(--gold2);font-family:'Playfair Display',serif;font-size:15px;font-weight:700;padding:8px 12px;border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center}
+.day-hdr .day-date{font-size:11px;opacity:.8;font-family:'Nunito',sans-serif;font-weight:600}
+.slots-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--cream2);border-radius:0 0 8px 8px;overflow:hidden}
+.slot{background:white;padding:10px 12px;cursor:pointer;transition:background .15s;position:relative}
+.slot:hover{background:#f0f9f5}
+.slot.full{background:var(--cream);cursor:not-allowed}
+.slot.blocked{background:#fff8f8;cursor:not-allowed}
+.slot.mine{background:#edf7f2}
+.slot.past{background:var(--cream);cursor:not-allowed;opacity:.55}
+.slot-time{font-weight:800;font-size:15px;color:var(--navy)}
+.slot-count{font-size:11.5px;color:#7a8499;margin-top:2px}
+.slot-badge{position:absolute;top:7px;right:8px;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:800}
+.b-open{background:#e8f5ee;color:var(--jade)}
+.b-full{background:#ffebeb;color:var(--red)}
+.b-mine{background:var(--jade);color:white}
+.b-blocked{background:#ffebeb;color:var(--red)}
+.b-past{background:var(--cream2);color:#aaa}
+.bk-item{background:white;border:2px solid var(--cream2);border-radius:10px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bk-detail strong{display:block;font-size:15px;color:var(--navy)}
+.bk-detail span{font-size:12.5px;color:#7a8499}
+.asec{margin-bottom:10px;border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+.asec-hdr{background:var(--navy2);color:var(--gold2);padding:11px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:13.5px}
+.chevron{transition:transform .3s;font-size:14px;opacity:.7}
+.asec-hdr.open .chevron{transform:rotate(180deg)}
+.asec-body{background:white;padding:16px;display:none;border:1px solid var(--cream2);border-top:none}
+.asec-body.open{display:block}
+.atable{width:100%;border-collapse:collapse;font-size:12.5px}
+.atable th{background:var(--jade3);color:var(--gold2);padding:7px 9px;text-align:left;font-size:11.5px}
+.atable td{padding:7px 9px;border-bottom:1px solid var(--cream2);vertical-align:middle}
+.atable tr:last-child td{border-bottom:none}
+.atable tr:hover td{background:var(--cream)}
+.tbadge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
+.t-normal{background:#e3f5ec;color:var(--jade)}
+.t-maint{background:#fff3e0;color:#d84315}
+.mia-ind{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:3px;vertical-align:middle}
+.mia-ok{background:var(--green)}.mia-warn{background:var(--orange)}.mia-lim{background:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}
+.divider{height:1px;background:var(--cream2);margin:14px 0}
+.text-sm{font-size:12.5px;color:#7a8499}
+.empty{text-align:center;padding:28px;color:#9aa3b2;font-size:14px}
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.moverlay.open{opacity:1;pointer-events:all}
+.mbox{background:white;border-radius:20px 20px 0 0;padding:22px 20px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s;padding-bottom:36px}
+.moverlay.open .mbox{transform:translateY(0)}
+.mtitle{font-family:'Playfair Display',serif;font-size:19px;color:var(--jade3);margin-bottom:14px}
+.mclose{float:right;background:var(--cream2);border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer;line-height:30px;text-align:center}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--navy);color:white;padding:11px 22px;border-radius:30px;font-size:13.5px;font-weight:700;opacity:0;transition:all .3s;z-index:999;text-align:center;pointer-events:none;max-width:88vw;white-space:pre-line}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.tok{background:var(--jade)}
+#toast.terr{background:var(--red)}
+#cbubble{position:fixed;bottom:16px;right:14px;width:50px;height:50px;background:var(--jade);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(26,92,69,.45);z-index:150;font-size:22px;transition:transform .2s}
+#cbubble:hover{transform:scale(1.1)}
+#cwin{position:fixed;bottom:74px;right:14px;width:300px;background:white;border-radius:16px;box-shadow:var(--shadow2);z-index:150;display:none;flex-direction:column;max-height:420px;border:1px solid var(--cream2);overflow:hidden}
+#cwin.open{display:flex}
+.chdr{background:var(--jade3);color:white;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:13.5px}
+.chdr button{background:none;border:none;color:white;font-size:16px;cursor:pointer}
+.cmsgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;max-height:270px}
+.cmsg{padding:8px 11px;border-radius:12px;font-size:12.5px;max-width:86%;line-height:1.45;white-space:pre-line}
+.cmsg.bot{background:var(--cream);align-self:flex-start;border-bottom-left-radius:4px}
+.cmsg.usr{background:var(--jade);color:white;align-self:flex-end;border-bottom-right-radius:4px}
+.cchips{display:flex;flex-wrap:wrap;gap:5px;padding:7px 10px}
+.chip{background:var(--cream);border:1px solid var(--jade);color:var(--jade);padding:4px 10px;border-radius:11px;font-size:12px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700}
+.chip:hover{background:var(--jade);color:white}
+.cinp{display:flex;gap:5px;padding:7px 10px;border-top:1px solid var(--cream2)}
+.cinp input{flex:1;padding:7px 10px;border:1.5px solid var(--cream2);border-radius:7px;font-size:13px;font-family:'Nunito',sans-serif;outline:none}
+.cinp input:focus{border-color:var(--jade)}
+.cinp button{background:var(--jade);color:white;border:none;border-radius:7px;padding:7px 11px;cursor:pointer;font-size:14px}
+.spin{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#loader{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:300;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+#loader.show{display:flex}
+#loader .spin{width:34px;height:34px;border-width:4px;border-color:rgba(26,92,69,.2);border-top-color:var(--jade)}
+#expframe{position:fixed;top:-9999px;left:0;width:860px;background:white;padding:24px;z-index:-1;font-family:'Nunito',sans-serif}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <img id="nav-logo" class="nav-logo" src="" alt="Tzu Chi"/>
+      <div class="nav-txt">
+        <div class="t1">Tzu Chi Bukit Batok</div>
+        <div class="t2">Gym Tonic · 健身操</div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="nbtn active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="nbtn" id="btn-zh" onclick="setLang('zh')">中文</button>
+      <button class="nbtn" onclick="openAdminLogin()" id="nav-admin-btn">Admin</button>
+    </div>
+  </div>
+</nav>
+
+<button class="rules-toggle-btn" onclick="toggleRules()">
+  <span>📋</span><span id="rules-btn-txt">Class Rules &amp; Schedule ▾</span>
+</button>
+<div id="rules-banner">
+  <div class="rules-inner">
+    <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--gold2);margin-bottom:4px">Gym Tonic — Class Information</div>
+    <div id="sched-summary" style="font-size:11.5px;opacity:.8;margin-bottom:10px;line-height:1.7">
+      Mon–Fri: 8:30am · 9:20am · 10:10am · 11:00am · 1:00pm · 1:50pm · 2:40pm · 3:30pm · 4:20pm<br>
+      Saturday (morning only): 8:30am · 9:20am · 10:10am · 11:00am
+    </div>
+    <div class="rules-grid">
+      <div class="rule-card"><div class="rule-icon">👥</div><div class="rule-title" id="r1t">Slot Limit</div><div class="rule-text" id="r1b">Max 6 members per slot. Max 1 class per day.</div></div>
+      <div class="rule-card"><div class="rule-icon">📅</div><div class="rule-title" id="r2t">Weekly Limit</div><div class="rule-text" id="r2b">Normal: 2x/week. Maintenance: 1x/week. Rest day recommended between sessions.</div></div>
+      <div class="rule-card"><div class="rule-icon">⏰</div><div class="rule-title" id="r3t">Booking Window</div><div class="rule-text" id="r3b">Current or next week only. Booking closes 5 min before class starts.</div></div>
+      <div class="rule-card"><div class="rule-icon">❌</div><div class="rule-title" id="r4t">Cancellation</div><div class="rule-text" id="r4b">Cancel at least 1 hour before class. No cancellation within 1 hour of class.</div></div>
+      <div class="rule-card"><div class="rule-icon">🚨</div><div class="rule-title" id="r5t">MIA Policy</div><div class="rule-text" id="r5b">Max 3 no-shows. After 3 MIA, admin may revoke membership — no refund.</div></div>
+      <div class="rule-card"><div class="rule-icon">🔑</div><div class="rule-title" id="r6t">Password</div><div class="rule-text" id="r6b">Select your name then enter personal password to sign in and book.</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="ann-bar"></div>
+
+<div id="loader"><div class="spin"></div><div style="color:var(--jade);font-weight:700;font-size:14px">Loading…</div></div>
+<div id="toast"></div>
+
+<main>
+  <div class="config-warn" id="config-warn" style="display:none">
+    <strong>⚠️ Setup Required — Supabase not configured</strong>
+    Open <code>index.html</code> in a text editor. Find the two lines near the top of the &lt;script&gt; section and replace <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code> with your actual Supabase values. See the step-by-step guide.
+  </div>
+
+  <div class="hero" id="hero-block">
+    <img id="hero-logo" class="hero-logo" src="" alt="Tzu Chi Foundation"/>
+    <h1 id="app-name-h1">Tzu Chi Bukit Batok<br>Gym Tonic</h1>
+    <p id="hero-sub">Book your exercise class · 预约健身课程</p>
+  </div>
+
+  <div class="card" id="login-card">
+    <div class="card-title" id="login-title">Sign In to Book</div>
+    <label id="lbl-name">Select Your Name</label>
+    <select id="sel-member"><option value="">-- Select your name --</option></select>
+    <label id="lbl-pw">Password</label>
+    <input type="password" id="inp-pw" placeholder="Enter your password"/>
+    <div class="mt12"><button class="btn btn-jade" onclick="doLogin()" id="btn-login">Sign In</button></div>
+  </div>
+
+  <div id="mpanel" style="display:none">
+    <div class="mstrip">
+      <div class="mavatar" id="m-avatar">?</div>
+      <div class="minfo">
+        <h3 id="m-name">—</h3>
+        <div class="mtype" id="m-type">—</div>
+        <div class="mia-dots" id="m-mia-dots"></div>
+      </div>
+      <button class="nbtn btn-sm" onclick="doLogout()" id="btn-logout" style="width:auto;white-space:nowrap">Logout</button>
+    </div>
+    <div class="balcard">
+      <div class="balitem"><div class="balnum" id="b-sessions">—</div><div class="ballabel" id="bl-sessions">Sessions</div></div>
+      <div class="balitem"><div class="balnum" id="b-expiry" style="font-size:13px;padding-top:6px;line-height:1.2">—</div><div class="ballabel" id="bl-expiry">Expiry</div></div>
+      <div class="balitem"><div class="balnum" id="b-weekly">—</div><div class="ballabel" id="bl-weekly">This Week</div></div>
+      <div class="balitem"><div class="balnum" id="b-mia">—</div><div class="ballabel" id="bl-mia">MIA</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-book" onclick="switchTab('book')">📅 Book</button>
+      <button class="tab-btn" id="tab-mine" onclick="switchTab('mine')">My Bookings</button>
+    </div>
+    <div id="tc-book">
+      <div class="week-row">
+        <button class="wbtn active" id="wk-this" onclick="pickWeek('this')">This Week</button>
+        <button class="wbtn" id="wk-next" onclick="pickWeek('next')">Next Week</button>
+      </div>
+      <div id="sched-container"><div class="empty">Loading…</div></div>
+    </div>
+    <div id="tc-mine" style="display:none">
+      <div class="card">
+        <div class="card-title" id="my-bk-title">My Upcoming Bookings</div>
+        <div id="my-bk-list"><div class="empty">Loading…</div></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ADMIN MODAL -->
+
+<div class="moverlay" id="adm-modal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeModal('adm-modal')">✕</button>
+    <div class="mtitle">⚙️ Admin Panel</div>
+    <div id="adm-login-area">
+      <label>Admin Password</label>
+      <input type="password" id="adm-pw" placeholder="Enter admin password"/>
+      <div class="mt12"><button class="btn btn-jade" onclick="doAdminLogin()">Enter Admin</button></div>
+    </div>
+    <div id="adm-content" style="display:none">
+      <div class="asec">
+        <div class="asec-hdr" onclick="togSec(this,'s-ann')">📢 Announcements <span class="chevron">▾</span></div>
+        <div class="asec-body" id="s-ann">
+          <div id="ann-list" style="margin-bottom:8px"></div>
+          <label>Post New Announcement</label>
+          <input type="text" id="ann-inp" placeholder="Type message here…"/>
+          <div class="mt8"><button class="btn btn-jade btn-sm" onclick="postAnn()">Post</button></div>
+        </div>
+      </div>
+      <div class="asec">
+        <div class="asec-hdr" onclick="togSec(this,'s-block')">🚫 Block Slots <span class="chevron">▾</span></div>
+        <div class="asec-body" id="s-block">
+          <div id="block-list" style="margin-bottom:8px"></div>
+          <label>Date</label><input type="date" id="bl-date"/>
+          <label>Time (leave blank = all day)</label>
+          <select id="bl-time">
+            <option value="">All slots that day</option>
+            <option>8:30am</option><option>9:20am</option><option>10:10am</option><option>11:00am</option>
+            <option>1:00pm</option><option>1:50pm</option><option>2:40pm</option><option>3:30pm</option><option>4:20pm</option>
+          </select>
+          <label>Reason</label><input type="text" id="bl-reason" placeholder="e.g. Public Holiday"/>
+          <div class="mt8"><button class="btn btn-jade btn-sm" onclick="addBlock()">Block Slot</button></div>
+        </div>
+      </div>
+      <div class="asec">
+        <div class="asec-hdr" onclick="togSec(this,'s-mbr')">👥 Members <span class="chevron">▾</span></div>
+        <div class="asec-body" id="s-mbr">
+          <div id="mbr-list"></div>
+          <div class="divider"></div>
+          <div style="font-weight:800;font-size:13px;margin-bottom:8px">➕ Add New Member</div>
+          <label>Full Name</label><input type="text" id="nm-name" placeholder="e.g. Tan Ah Kow"/>
+          <label>Password</label><input type="password" id="nm-pw" placeholder="Set a password for this member"/>
+          <label>Member Type</label>
+          <select id="nm-type"><option value="normal">Normal (2x/week)</option><option value="maintenance">Maintenance (1x/week)</option></select>
+          <label>Sessions Balance</label><input type="text" id="nm-sess" placeholder="e.g. 20 (leave blank for unlimited)"/>
+          <label>Expiry Date</label><input type="date" id="nm-expiry"/>
+          <div class="mt8"><button class="btn btn-jade btn-sm" onclick="addMember()">Add Member</button></div>
+        </div>
+      </div>
+      <div class="asec">
+        <div class="asec-hdr" onclick="togSec(this,'s-mia')">🔴 MIA Tracker <span class="chevron">▾</span></div>
+        <div class="asec-body" id="s-mia"><div id="mia-list"></div></div>
+      </div>
+      <div class="asec">
+        <div class="asec-hdr" onclick="togSec(this,'s-bk')">📅 All Bookings <span class="chevron">▾</span></div>
+        <div class="asec-body" id="s-bk">
+          <div class="grid2">
+            <div><label>Member</label><select id="af-mbr"><option value="">All Members</option></select></div>
+            <div><label>Week</label><select id="af-wk"><option value="this">This Week</option><option value="next">Next Week</option><option value="all">All</option></select></div>
+          </div>
+          <div class="mt8"><button class="btn btn-outline btn-sm" onclick="loadAdmBk()">Filter</button></div>
+          <div id="adm-bk-list" style="margin-top:12px"></div>
+          <div class="divider"></div>
+          <div style="font-weight:800;font-size:13px;margin-bottom:8px">➕ Add Booking Manually</div>
+          <label>Member</label><select id="ab-mbr"><option value="">Select member</option></select>
+          <label>Date</label><input type="date" id="ab-date"/>
+          <label>Time</label>
+          <select id="ab-time">
+            <option>8:30am</option><option>9:20am</option><option>10:10am</option><option>11:00am</option>
+            <option>1:00pm</option><option>1:50pm</option><option>2:40pm</option><option>3:30pm</option><option>4:20pm</option>
+          </select>
+          <div class="mt8"><button class="btn btn-jade btn-sm" onclick="admAddBk()">Add Booking</button></div>
+        </div>
+      </div>
+      <div class="asec">
+        <div class="asec-hdr" onclick="togSec(this,'s-exp')">📸 Export Timetable PNG <span class="chevron">▾</span></div>
+        <div class="asec-body" id="s-exp">
+          <p class="text-sm" style="margin-bottom:10px">Download as PNG image to share on WhatsApp / Telegram.</p>
+          <div class="grid2">
+            <button class="btn btn-gold" onclick="exportPNG('this')">📥 This Week</button>
+            <button class="btn btn-gold" onclick="exportPNG('next')">📥 Next Week</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+
+<div class="moverlay" id="bk-modal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeModal('bk-modal')">✕</button>
+    <div class="mtitle" id="bk-modal-title">Confirm Booking</div>
+    <div id="bk-modal-body"></div>
+    <div class="mt12"><button class="btn btn-jade" id="bk-confirm-btn" onclick="confirmBook()">Confirm Booking</button></div>
+  </div>
+</div>
+
+<!-- CANCEL MODAL -->
+
+<div class="moverlay" id="cn-modal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeModal('cn-modal')">✕</button>
+    <div class="mtitle" id="cn-modal-title">Cancel Booking</div>
+    <div id="cn-modal-body"></div>
+    <div class="grid2 mt12">
+      <button class="btn btn-outline" onclick="closeModal('cn-modal')" id="btn-back">Back</button>
+      <button class="btn btn-red" id="cn-confirm-btn" onclick="confirmCancel()">Cancel Booking</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MEMBER MODAL -->
+
+<div class="moverlay" id="em-modal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeModal('em-modal')">✕</button>
+    <div class="mtitle">Edit Member</div>
+    <input type="hidden" id="em-id"/>
+    <label>Name</label><input type="text" id="em-name"/>
+    <label>Password</label><input type="password" id="em-pw"/>
+    <label>Member Type</label>
+    <select id="em-type"><option value="normal">Normal (2x/week)</option><option value="maintenance">Maintenance (1x/week)</option></select>
+    <label>Sessions Balance</label><input type="text" id="em-sess"/>
+    <label>Expiry Date</label><input type="date" id="em-expiry"/>
+    <div class="mt12"><button class="btn btn-jade" onclick="saveEdit()">Save Changes</button></div>
+  </div>
+</div>
+
+<!-- CHATBOT -->
+
+<div id="cbubble" onclick="togChat()">💬</div>
+<div id="cwin">
+  <div class="chdr"><span>🤖 CourtBot</span><button onclick="togChat()">✕</button></div>
+  <div class="cmsgs" id="cmsgs"></div>
+  <div class="cchips">
+    <span class="chip" onclick="chipQ('Classes?')">Classes?</span>
+    <span class="chip" onclick="chipQ('Rules')">Rules</span>
+    <span class="chip" onclick="chipQ('Cancel?')">Cancel?</span>
+    <span class="chip" onclick="chipQ('MIA')">MIA</span>
+    <span class="chip" onclick="chipQ('Password')">Password?</span>
+  </div>
+  <div class="cinp">
+    <input type="text" id="cinp" placeholder="Ask anything…" onkeydown="if(event.key==='Enter')sendChat()"/>
+    <button onclick="sendChat()">➤</button>
+  </div>
+</div>
+
+<div id="expframe"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+// ============================================================
+// ⚙️  REPLACE THESE TWO VALUES WITH YOUR SUPABASE CREDENTIALS
+// ============================================================
+const SB_URL = 'YOUR_SUPABASE_URL';
+const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const ADM_PW = 'tzuchi.123';
+// ============================================================
+
+const LOGO = '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';
+document.getElementById('nav-logo').src = 'data:image/png;base64,'+LOGO;
+document.getElementById('hero-logo').src = 'data:image/png;base64,'+LOGO;
+
+if(SB_URL==='YOUR_SUPABASE_URL'||SB_KEY==='YOUR_SUPABASE_ANON_KEY'){
+  document.getElementById('config-warn').style.display='block';
+}
+
+// ============================================================
+// I18N
+// ============================================================
+const TX={
+en:{
+  app_name:'Tzu Chi Bukit Batok\nGym Tonic',
+  hero_sub:'Book your exercise class · 预约健身课程',
+  login_title:'Sign In to Book',lbl_name:'Select Your Name',
+  lbl_pw:'Password',btn_login:'Sign In',btn_logout:'Logout',
+  tab_book:'📅 Book',tab_mine:'My Bookings',
+  wk_this:'This Week',wk_next:'Next Week',
+  my_bk_title:'My Upcoming Bookings',
+  bk_title:'Confirm Booking',cn_title:'Cancel Booking',
+  btn_confirm:'Confirm Booking',btn_back:'Back',btn_do_cancel:'Cancel Booking',
+  bl_sessions:'Sessions',bl_expiry:'Expiry',bl_weekly:'This Week',bl_mia:'MIA',
+  t_ok:'✅ Booking confirmed!',t_cancelled:'Booking cancelled.',
+  t_pw_err:'Incorrect password. Please try again.',
+  t_full:'This slot is full (6/6).',t_wk_lim:'Weekly booking limit reached.',
+  t_day_lim:'Already have a booking today.',
+  t_too_late:'Booking closed — 5 min before class.',
+  t_cancel_late:'Cannot cancel within 1 hour of class.',
+  t_expired:'Membership expired or no sessions remaining.',
+  t_added:'Member added!',t_updated:'Member updated.',t_deleted:'Member removed.',
+  t_blocked:'Slot blocked.',t_ann_posted:'Announcement posted.',
+  s_open:'Open',s_full:'Full',s_mine:'My Booking',s_blocked:'Blocked',s_past:'Past',
+  no_bk:'No upcoming bookings.',
+  day_mon:'Monday',day_tue:'Tuesday',day_wed:'Wednesday',
+  day_thu:'Thursday',day_fri:'Friday',day_sat:'Saturday',
+  mt_normal:'Normal Member (2x/week)',mt_maint:'Maintenance Member (1x/week)',
+  rules_open:'Class Rules & Schedule ▾',rules_close:'Class Rules & Schedule ▴',
+  nav_admin:'Admin',
+  r1t:'Slot Limit',r1b:'Max 6 members per slot. Max 1 class per day.',
+  r2t:'Weekly Limit',r2b:'Normal: 2x/week. Maintenance: 1x/week. Rest day recommended.',
+  r3t:'Booking Window',r3b:'Current or next week only. Closes 5 min before class.',
+  r4t:'Cancellation',r4b:'Cancel at least 1 hour before class. No refund for same-day no-shows.',
+  r5t:'MIA Policy',r5b:'Max 3 no-shows. After 3 MIA, membership may be revoked — no refund.',
+  r6t:'Password',r6b:'Select your name then enter personal password set by admin.',
+  sched_summary:'Mon–Fri: 8:30am · 9:20am · 10:10am · 11:00am · 1:00pm · 1:50pm · 2:40pm · 3:30pm · 4:20pm\nSaturday (morning only): 8:30am · 9:20am · 10:10am · 11:00am',
+},
+zh:{
+  app_name:'慈济武吉班让\n健身操',
+  hero_sub:'预约您的健身课程',
+  login_title:'登录预约',lbl_name:'选择您的姓名',
+  lbl_pw:'密码',btn_login:'登录',btn_logout:'退出',
+  tab_book:'📅 预约',tab_mine:'我的预约',
+  wk_this:'本周',wk_next:'下周',
+  my_bk_title:'我的预约',
+  bk_title:'确认预约',cn_title:'取消预约',
+  btn_confirm:'确认预约',btn_back:'返回',btn_do_cancel:'取消预约',
+  bl_sessions:'剩余课程',bl_expiry:'到期日',bl_weekly:'本周已订',bl_mia:'缺席',
+  t_ok:'✅ 预约成功！',t_cancelled:'已取消预约。',
+  t_pw_err:'密码错误，请重试。',
+  t_full:'此时段已满（6/6）。',t_wk_lim:'本周预约次数已达上限。',
+  t_day_lim:'当天已有预约。',
+  t_too_late:'已超过预约截止时间。',
+  t_cancel_late:'开课前1小时内不能取消。',
+  t_expired:'会员已过期或课程已用完。',
+  t_added:'已添加会员！',t_updated:'已更新。',t_deleted:'已删除会员。',
+  t_blocked:'已封锁时段。',t_ann_posted:'公告已发布。',
+  s_open:'可预约',s_full:'已满',s_mine:'我的预约',s_blocked:'已封锁',s_past:'已过',
+  no_bk:'没有即将到来的预约。',
+  day_mon:'星期一',day_tue:'星期二',day_wed:'星期三',
+  day_thu:'星期四',day_fri:'星期五',day_sat:'星期六',
+  mt_normal:'普通会员（每周2次）',mt_maint:'维保会员（每周1次）',
+  rules_open:'课程规则与时间表 ▾',rules_close:'课程规则与时间表 ▴',
+  nav_admin:'管理',
+  r1t:'人数限制',r1b:'每时段最多6人，每天只能预约1节课。',
+  r2t:'每周限制',r2b:'普通会员每周2次，维保会员每周1次。建议中间休息一天。',
+  r3t:'预约时间',r3b:'只能预约本周或下周。开课前5分钟截止预约。',
+  r4t:'取消规则',r4b:'请至少提前1小时取消。开课前1小时内不能取消。',
+  r5t:'缺席政策',r5b:'最多3次缺席。超过3次，管理员可取消会员资格，不退款。',
+  r6t:'密码',r6b:'选择姓名后输入管理员设置的个人密码。',
+  sched_summary:'周一至周五：8:30 · 9:20 · 10:10 · 11:00 · 13:00 · 13:50 · 14:40 · 15:30 · 16:20\n周六（仅上午）：8:30 · 9:20 · 10:10 · 11:00',
+}};
+
+let lang='en';
+function T(k){return TX[lang][k]||TX.en[k]||k;}
+function applyLang(){
+  // Nav
+  document.getElementById('nav-admin-btn').textContent=T('nav_admin');
+  document.getElementById('btn-en').classList.toggle('active',lang==='en');
+  document.getElementById('btn-zh').classList.toggle('active',lang==='zh');
+  // Hero
+  document.getElementById('app-name-h1').innerHTML=T('app_name').replace('\n','<br>');
+  document.getElementById('hero-sub').textContent=T('hero_sub');
+  // Login
+  document.getElementById('login-title').textContent=T('login_title');
+  document.getElementById('lbl-name').textContent=T('lbl_name');
+  document.getElementById('lbl-pw').textContent=T('lbl_pw');
+  document.getElementById('inp-pw').placeholder=lang==='zh'?'请输入密码':'Enter your password';
+  document.getElementById('btn-login').textContent=T('btn_login');
+  // Tabs
+  document.getElementById('tab-book').textContent=T('tab_book');
+  document.getElementById('tab-mine').textContent=T('tab_mine');
+  document.getElementById('wk-this').textContent=T('wk_this');
+  document.getElementById('wk-next').textContent=T('wk_next');
+  document.getElementById('btn-logout').textContent=T('btn_logout');
+  document.getElementById('my-bk-title').textContent=T('my_bk_title');
+  // Balance labels
+  document.getElementById('bl-sessions').textContent=T('bl_sessions');
+  document.getElementById('bl-expiry').textContent=T('bl_expiry');
+  document.getElementById('bl-weekly').textContent=T('bl_weekly');
+  document.getElementById('bl-mia').textContent=T('bl_mia');
+  // Modals
+  document.getElementById('bk-modal-title').textContent=T('bk_title');
+  document.getElementById('cn-modal-title').textContent=T('cn_title');
+  document.getElementById('bk-confirm-btn').textContent=T('btn_confirm');
+  document.getElementById('cn-confirm-btn').textContent=T('btn_do_cancel');
+  document.getElementById('btn-back').textContent=T('btn_back');
+  // Rules banner
+  document.getElementById('rules-btn-txt').textContent=rulesOpen?T('rules_close'):T('rules_open');
+  document.getElementById('sched-summary').innerHTML=T('sched_summary').replace('\n','<br>');
+  document.getElementById('r1t').textContent=T('r1t');document.getElementById('r1b').textContent=T('r1b');
+  document.getElementById('r2t').textContent=T('r2t');document.getElementById('r2b').textContent=T('r2b');
+  document.getElementById('r3t').textContent=T('r3t');document.getElementById('r3b').textContent=T('r3b');
+  document.getElementById('r4t').textContent=T('r4t');document.getElementById('r4b').textContent=T('r4b');
+  document.getElementById('r5t').textContent=T('r5t');document.getElementById('r5b').textContent=T('r5b');
+  document.getElementById('r6t').textContent=T('r6t');document.getElementById('r6b').textContent=T('r6b');
+  if(curMember) renderStrip();
+}
+function setLang(l){lang=l;applyLang();if(curMember)renderSched();}
+
+// ============================================================
+// SUPABASE REST
+// ============================================================
+async function sbFetch(method,table,body,qs=''){
+  if(SB_URL==='YOUR_SUPABASE_URL') throw new Error('Supabase not configured. Please update SB_URL and SB_KEY in the file.');
+  const url=`${SB_URL}/rest/v1/${table}${qs}`;
+  const headers={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
+  if(method==='POST'||method==='PATCH') headers['Prefer']='return=representation';
+  const resp=await fetch(url,{method,headers,body:body?JSON.stringify(body):undefined});
+  if(resp.status===204)return[];
+  const text=await resp.text();
+  if(!text.trim())return[];
+  let data;
+  try{data=JSON.parse(text);}
+  catch(e){throw new Error('Response parse error: '+text.slice(0,150));}
+  if(data&&(data.error||data.code||data.message)&&!Array.isArray(data)){
+    throw new Error(data.message||data.error||data.hint||JSON.stringify(data).slice(0,150));
+  }
+  return data;
+}
+const DB={
+  getMembers:()=>sbFetch('GET','members',null,'?select=*&order=name.asc'),
+  getMemberById:(id)=>sbFetch('GET','members',null,`?id=eq.${id}&select=*`),
+  addMember:(d)=>sbFetch('POST','members',d),
+  patchMember:(id,d)=>sbFetch('PATCH','members',d,`?id=eq.${id}`),
+  delMember:(id)=>sbFetch('DELETE','members',null,`?id=eq.${id}`),
+  getBookings:(qs='')=>sbFetch('GET','bookings',null,`?select=*,members(name)${qs}`),
+  addBooking:(d)=>sbFetch('POST','bookings',d),
+  delBooking:(id)=>sbFetch('DELETE','bookings',null,`?id=eq.${id}`),
+  getBlocked:()=>sbFetch('GET','blocked_slots',null,'?select=*'),
+  addBlock:(d)=>sbFetch('POST','blocked_slots',d),
+  delBlock:(id)=>sbFetch('DELETE','blocked_slots',null,`?id=eq.${id}`),
+  getAnn:()=>sbFetch('GET','announcements',null,'?select=*&order=created_at.desc'),
+  addAnn:(d)=>sbFetch('POST','announcements',d),
+  delAnn:(id)=>sbFetch('DELETE','announcements',null,`?id=eq.${id}`),
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let curMember=null,members=[],bookings=[],blocked=[];
+let selWeek='this',pendBook=null,pendCancel=null,rulesOpen=false;
+
+const WD_SLOTS=['8:30am','9:20am','10:10am','11:00am','1:00pm','1:50pm','2:40pm','3:30pm','4:20pm'];
+const SAT_SLOTS=['8:30am','9:20am','10:10am','11:00am'];
+
+function weekDates(w){
+  const now=new Date(),d=now.getDay();
+  const mon=new Date(now);
+  mon.setDate(now.getDate()+(d===0?-6:1-d));
+  if(w==='next')mon.setDate(mon.getDate()+7);
+  return Array.from({length:6},(_,i)=>{const x=new Date(mon);x.setDate(mon.getDate()+i);return x;});
+}
+function ds(d){return d.toISOString().split('T')[0];}
+function fd(d){return d.toLocaleDateString('en-SG',{weekday:'short',month:'short',day:'numeric'});}
+function slotDT(dateObj,ts){
+  const ap=ts.slice(-2).toLowerCase(),tp=ts.slice(0,-2);
+  let [h,m]=[...tp.split(':').map(Number)];m=m||0;
+  if(ap==='pm'&&h!==12)h+=12;if(ap==='am'&&h===12)h=0;
+  const x=new Date(dateObj);x.setHours(h,m,0,0);return x;
+}
+function isBlocked(dateObj,ts){const d=ds(dateObj);return blocked.some(b=>b.slot_date===d&&(!b.slot_time||b.slot_time===ts));}
+function blockReason(dateObj,ts){const d=ds(dateObj);const b=blocked.find(x=>x.slot_date===d&&(!x.slot_time||x.slot_time===ts));return b?b.reason:'';}
+function slotBks(dateObj,ts){return bookings.filter(b=>b.slot_date===ds(dateObj)&&b.slot_time===ts);}
+function weekRange(w){const dates=weekDates(w);return{start:ds(dates[0]),end:ds(dates[5])};}
+function myWeekCount(w){const{start,end}=weekRange(w);return bookings.filter(b=>b.member_id===curMember.id&&b.slot_date>=start&&b.slot_date<=end).length;}
+function myDayCount(dateObj){return bookings.filter(b=>b.member_id===curMember.id&&b.slot_date===ds(dateObj)).length;}
+
+// ============================================================
+// UI UTILS
+// ============================================================
+function showLoad(){document.getElementById('loader').classList.add('show');}
+function hideLoad(){document.getElementById('loader').classList.remove('show');}
+let toastT;
+function toast(msg,type='ok'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='show t'+type;
+  clearTimeout(toastT);toastT=setTimeout(()=>{el.className='';},3200);
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function togSec(hdr,bodyId){hdr.classList.toggle('open');document.getElementById(bodyId).classList.toggle('open');}
+function switchTab(t){
+  document.getElementById('tc-book').style.display=t==='book'?'':'none';
+  document.getElementById('tc-mine').style.display=t==='mine'?'':'none';
+  document.getElementById('tab-book').classList.toggle('active',t==='book');
+  document.getElementById('tab-mine').classList.toggle('active',t==='mine');
+  if(t==='mine')renderMyBk();
+}
+function pickWeek(w){
+  selWeek=w;
+  document.getElementById('wk-this').classList.toggle('active',w==='this');
+  document.getElementById('wk-next').classList.toggle('active',w==='next');
+  renderSched();
+}
+function toggleRules(){
+  rulesOpen=!rulesOpen;
+  document.getElementById('rules-banner').classList.toggle('open',rulesOpen);
+  document.getElementById('rules-btn-txt').textContent=rulesOpen?T('rules_close'):T('rules_open');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+async function init(){
+  showLoad();
+  try{
+    members=await DB.getMembers();
+    populateMemberSelect(document.getElementById('sel-member'),true);
+    const ann=await DB.getAnn();
+    if(ann.length){document.getElementById('ann-bar').textContent=ann[0].message;document.getElementById('ann-bar').style.display='block';}
+  }catch(e){console.warn('Init DB error:',e.message);}
+  hideLoad();
+  applyLang();
+  botMsg("Hi! I'm CourtBot 🤖 Ask me about: Classes?, Rules, Cancel?, MIA or Password?");
+}
+
+function populateMemberSelect(sel,addBlank){
+  sel.innerHTML=(addBlank?`<option value="">${T('lbl_name')==='Select Your Name'?'-- Select your name --':'-- 请选择姓名 --'}</option>`:'');
+  members.forEach(m=>sel.innerHTML+=`<option value="${m.id}">${m.name}</option>`);
+}
+
+// ============================================================
+// LOGIN/LOGOUT
+// ============================================================
+async function doLogin(){
+  const mid=parseInt(document.getElementById('sel-member').value);
+  const pw=document.getElementById('inp-pw').value.trim();
+  if(!mid){toast(lang==='zh'?'请选择姓名。':'Please select your name.','err');return;}
+  if(!pw){toast(lang==='zh'?'请输入密码。':'Please enter your password.','err');return;}
+  showLoad();
+  try{
+    const res=await DB.getMemberById(mid);
+    if(!res||!res.length){toast(T('t_pw_err'),'err');hideLoad();return;}
+    const m=res[0];
+    if(m.password!==pw){toast(T('t_pw_err'),'err');hideLoad();return;}
+    curMember=m;
+    await loadData();
+    renderStrip();renderBal();
+    document.getElementById('login-card').style.display='none';
+    document.getElementById('hero-block').style.display='none';
+    document.getElementById('mpanel').style.display='';
+    renderSched();
+  }catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+function doLogout(){
+  curMember=null;
+  document.getElementById('login-card').style.display='';
+  document.getElementById('hero-block').style.display='';
+  document.getElementById('mpanel').style.display='none';
+  document.getElementById('inp-pw').value='';
+}
+async function loadData(){
+  const[bk,bl]=await Promise.all([DB.getBookings(),DB.getBlocked()]);
+  bookings=bk;blocked=bl;
+}
+
+// ============================================================
+// STRIP + BALANCE
+// ============================================================
+function renderStrip(){
+  const m=curMember;
+  document.getElementById('m-name').textContent=m.name;
+  document.getElementById('m-type').textContent=m.member_type==='maintenance'?T('mt_maint'):T('mt_normal');
+  document.getElementById('m-avatar').textContent=m.name.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+  const cnt=m.mia_count||0;
+  const dots=document.getElementById('m-mia-dots');
+  dots.innerHTML='';
+  for(let i=0;i<3;i++){const d=document.createElement('div');d.className='mia-dot'+(i<cnt?' used':'');dots.appendChild(d);}
+}
+function renderBal(){
+  const m=curMember;
+  document.getElementById('b-sessions').textContent=m.sessions_balance!=null?m.sessions_balance:'∞';
+  document.getElementById('b-expiry').textContent=m.expiry_date||'—';
+  document.getElementById('b-mia').textContent=m.mia_count||0;
+  document.getElementById('b-weekly').textContent=myWeekCount('this');
+}
+
+// ============================================================
+// SCHEDULE
+// ============================================================
+function renderSched(){
+  const con=document.getElementById('sched-container');
+  con.innerHTML='';
+  const dates=weekDates(selWeek);
+  const dnames=[T('day_mon'),T('day_tue'),T('day_wed'),T('day_thu'),T('day_fri'),T('day_sat')];
+  const now=new Date();
+  dates.forEach((dateObj,idx)=>{
+    const slots=idx===5?SAT_SLOTS:WD_SLOTS;
+    const blk=document.createElement('div');blk.className='day-block';
+    blk.innerHTML=`<div class="day-hdr"><span>${dnames[idx]}</span><span class="day-date">${fd(dateObj)}</span></div>`;
+    const grid=document.createElement('div');grid.className='slots-grid';
+    slots.forEach(ts=>{
+      const dt=slotDT(dateObj,ts),cutoff=new Date(dt.getTime()-5*60000);
+      const isPast=now>cutoff,isBlk=isBlocked(dateObj,ts);
+      const bks=slotBks(dateObj,ts),full=bks.length>=6;
+      const mine=bks.find(b=>b.member_id===curMember.id);
+      const s=document.createElement('div');s.className='slot';
+      if(isPast)s.classList.add('past');
+      else if(isBlk)s.classList.add('blocked');
+      else if(mine)s.classList.add('mine');
+      else if(full)s.classList.add('full');
+      let bc='b-open',bt=T('s_open');
+      if(isPast){bc='b-past';bt=T('s_past');}
+      else if(isBlk){bc='b-blocked';bt=T('s_blocked');}
+      else if(mine){bc='b-mine';bt=T('s_mine');}
+      else if(full){bc='b-full';bt=T('s_full');}
+      s.innerHTML=`<div class="slot-time">${ts}</div><div class="slot-count">${bks.length}/6</div><span class="slot-badge ${bc}">${bt}</span>`;
+      if(mine&&!isPast)s.onclick=()=>openCancelModal(mine,dateObj,ts);
+      else if(!isBlk&&!full&&!isPast)s.onclick=()=>openBookModal(dateObj,ts);
+      grid.appendChild(s);
+    });
+    blk.appendChild(grid);con.appendChild(blk);
+  });
+}
+
+// ============================================================
+// BOOKING
+// ============================================================
+function openBookModal(dateObj,ts){
+  const m=curMember;
+  if(m.expiry_date&&new Date(m.expiry_date+'T23:59:59')<new Date()){toast(T('t_expired'),'err');return;}
+  if(m.sessions_balance!=null&&m.sessions_balance<=0){toast(T('t_expired'),'err');return;}
+  const maxWk=m.member_type==='maintenance'?1:2;
+  if(myWeekCount(selWeek)>=maxWk){toast(T('t_wk_lim'),'err');return;}
+  if(myDayCount(dateObj)>=1){toast(T('t_day_lim'),'err');return;}
+  pendBook={dateObj,ts};
+  document.getElementById('bk-modal-body').innerHTML=`
+    <div style="background:var(--cream);border-radius:10px;padding:14px 16px">
+      <div style="font-size:20px;font-weight:800;color:var(--navy)">${ts}</div>
+      <div style="color:#7a8499;margin-top:4px;font-size:14px">${fd(dateObj)}</div>
+      <div style="color:var(--jade);font-weight:700;margin-top:10px;font-size:15px">${m.name}</div>
+      <div style="font-size:12px;color:#7a8499;margin-top:3px">${m.member_type==='maintenance'?T('mt_maint'):T('mt_normal')}</div>
+      ${m.sessions_balance!=null?`<div style="font-size:12px;color:var(--jade);margin-top:6px">Sessions remaining: <strong>${m.sessions_balance}</strong></div>`:''}
+    </div>`;
+  openModal('bk-modal');
+}
+async function confirmBook(){
+  if(!pendBook||!curMember)return;
+  const{dateObj,ts}=pendBook;
+  const btn=document.getElementById('bk-confirm-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spin"></div>';
+  try{
+    await DB.addBooking({member_id:curMember.id,slot_date:ds(dateObj),slot_time:ts});
+    if(curMember.sessions_balance!=null){
+      const nb=Math.max(0,curMember.sessions_balance-1);
+      await DB.patchMember(curMember.id,{sessions_balance:nb});
+      curMember.sessions_balance=nb;
+    }
+    await loadData();renderSched();renderBal();
+    closeModal('bk-modal');toast(T('t_ok'),'ok');
+  }catch(e){toast('Error: '+e.message,'err');}
+  btn.disabled=false;btn.textContent=T('btn_confirm');
+  pendBook=null;
+}
+
+// ============================================================
+// CANCEL
+// ============================================================
+function openCancelModal(bk,dateObj,ts){
+  const dt=slotDT(dateObj,ts),diff=dt-new Date();
+  if(diff>0&&diff<3600000){toast(T('t_cancel_late'),'err');return;}
+  if(diff<=0){toast(lang==='zh'?'课程已开始或已结束。':'Class has already started or ended.','err');return;}
+  pendCancel={bk,dateObj,ts};
+  document.getElementById('cn-modal-body').innerHTML=`
+    <div style="background:var(--cream);border-radius:10px;padding:14px 16px">
+      <div style="font-size:20px;font-weight:800;color:var(--navy)">${ts}</div>
+      <div style="color:#7a8499;margin-top:4px;font-size:14px">${fd(dateObj)}</div>
+      <div style="color:var(--red);font-size:13px;margin-top:10px">⚠️ ${lang==='zh'?'取消后课程将退回至您的账户。':'Session will be refunded to your balance.'}</div>
+    </div>`;
+  openModal('cn-modal');
+}
+async function confirmCancel(){
+  if(!pendCancel||!curMember)return;
+  const btn=document.getElementById('cn-confirm-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spin"></div>';
+  try{
+    await DB.delBooking(pendCancel.bk.id);
+    if(curMember.sessions_balance!=null){
+      const nb=curMember.sessions_balance+1;
+      await DB.patchMember(curMember.id,{sessions_balance:nb});
+      curMember.sessions_balance=nb;
+    }
+    await loadData();renderSched();renderBal();
+    closeModal('cn-modal');toast(T('t_cancelled'),'ok');
+  }catch(e){toast('Error: '+e.message,'err');}
+  btn.disabled=false;btn.textContent=T('btn_do_cancel');
+  pendCancel=null;
+}
+
+// ============================================================
+// MY BOOKINGS
+// ============================================================
+function renderMyBk(){
+  if(!curMember)return;
+  const list=document.getElementById('my-bk-list');
+  const now=new Date();
+  const mine=bookings.filter(b=>b.member_id===curMember.id&&slotDT(new Date(b.slot_date+'T00:00:00'),b.slot_time)>now)
+    .sort((a,b)=>new Date(a.slot_date)-new Date(b.slot_date));
+  if(!mine.length){list.innerHTML=`<div class="empty">${T('no_bk')}</div>`;return;}
+  list.innerHTML=mine.map(b=>`
+    <div class="bk-item">
+      <div class="bk-detail">
+        <strong>${b.slot_time}</strong>
+        <span>${new Date(b.slot_date+'T00:00:00').toLocaleDateString('en-SG',{weekday:'short',month:'short',day:'numeric'})}</span>
+      </div>
+      <button class="btn btn-red btn-sm" onclick="openCancelModal({id:${b.id},member_id:${b.member_id}},new Date('${b.slot_date}T00:00:00'),'${b.slot_time}')">Cancel</button>
+    </div>`).join('');
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+function openAdminLogin(){
+  document.getElementById('adm-login-area').style.display='';
+  document.getElementById('adm-content').style.display='none';
+  document.getElementById('adm-pw').value='';
+  openModal('adm-modal');
+}
+async function doAdminLogin(){
+  if(document.getElementById('adm-pw').value!==ADM_PW){toast('Wrong admin password.','err');return;}
+  document.getElementById('adm-login-area').style.display='none';
+  document.getElementById('adm-content').style.display='';
+  showLoad();
+  try{await Promise.all([loadAdmAnn(),loadAdmBlocks(),loadAdmMembers(),loadAdmMia()]);}
+  catch(e){toast('Error loading admin data: '+e.message,'err');}
+  hideLoad();
+}
+
+async function loadAdmAnn(){
+  const ann=await DB.getAnn();
+  const list=document.getElementById('ann-list');
+  if(!ann.length){list.innerHTML='<div class="text-sm">No announcements.</div>';return;}
+  list.innerHTML=ann.map(a=>`
+    <div style="display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--cream2)">
+      <span style="font-size:13px;flex:1">${a.message}</span>
+      <button class="btn btn-red btn-sm" onclick="delAnn(${a.id})" style="flex-shrink:0">✕</button>
+    </div>`).join('');
+}
+async function postAnn(){
+  const msg=document.getElementById('ann-inp').value.trim();
+  if(!msg)return;
+  showLoad();
+  try{
+    await DB.addAnn({message:msg});
+    document.getElementById('ann-inp').value='';
+    await loadAdmAnn();
+    const ann=await DB.getAnn();
+    if(ann.length){document.getElementById('ann-bar').textContent=ann[0].message;document.getElementById('ann-bar').style.display='block';}
+    toast(T('t_ann_posted'),'ok');
+  }catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+async function delAnn(id){
+  showLoad();
+  try{
+    await DB.delAnn(id);await loadAdmAnn();
+    const ann=await DB.getAnn();
+    if(ann.length)document.getElementById('ann-bar').textContent=ann[0].message;
+    else document.getElementById('ann-bar').style.display='none';
+  }catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+
+async function loadAdmBlocks(){
+  const bl=await DB.getBlocked();
+  const list=document.getElementById('block-list');
+  if(!bl.length){list.innerHTML='<div class="text-sm">No blocked slots.</div>';return;}
+  list.innerHTML=bl.map(b=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--cream2)">
+      <span style="font-size:12px;flex:1">${b.slot_date} · ${b.slot_time||'All day'} · ${b.reason}</span>
+      <button class="btn btn-red btn-sm" onclick="delBlock(${b.id})" style="flex-shrink:0">✕</button>
+    </div>`).join('');
+}
+async function addBlock(){
+  const date=document.getElementById('bl-date').value;
+  const time=document.getElementById('bl-time').value;
+  const reason=document.getElementById('bl-reason').value||'Blocked';
+  if(!date){toast('Please select a date.','err');return;}
+  showLoad();
+  try{
+    await DB.addBlock({slot_date:date,slot_time:time||null,reason});
+    await loadAdmBlocks();blocked=await DB.getBlocked();
+    if(curMember)renderSched();
+    toast(T('t_blocked'),'ok');
+  }catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+async function delBlock(id){
+  showLoad();
+  try{await DB.delBlock(id);await loadAdmBlocks();blocked=await DB.getBlocked();if(curMember)renderSched();}
+  catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+
+async function loadAdmMembers(){
+  const mb=await DB.getMembers();members=mb;
+  ['af-mbr','ab-mbr'].forEach(sid=>{
+    const s=document.getElementById(sid);
+    s.innerHTML=(sid==='af-mbr'?'<option value="">All Members</option>':'<option value="">Select member</option>');
+    mb.forEach(m=>s.innerHTML+=`<option value="${m.id}">${m.name}</option>`);
+  });
+  const list=document.getElementById('mbr-list');
+  if(!mb.length){list.innerHTML='<div class="text-sm" style="padding:8px 0">No members yet.</div>';return;}
+  list.innerHTML=`<div style="overflow-x:auto"><table class="atable">
+    <thead><tr><th>Name</th><th>Type</th><th>Sessions</th><th>Expiry</th><th>MIA</th><th>Actions</th></tr></thead>
+    <tbody>
+    ${mb.map(m=>`<tr>
+      <td><strong>${m.name}</strong></td>
+      <td><span class="tbadge ${m.member_type==='maintenance'?'t-maint':'t-normal'}">${m.member_type==='maintenance'?'Maint':'Normal'}</span></td>
+      <td>${m.sessions_balance!=null?m.sessions_balance:'∞'}</td>
+      <td style="font-size:11px">${m.expiry_date||'—'}</td>
+      <td>${m.mia_count||0}/3</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-outline btn-sm" onclick="openEditMbr(${m.id})" style="margin-right:3px;margin-bottom:3px">Edit</button>
+        <button class="btn btn-red btn-sm" onclick="delMbr(${m.id})">Del</button>
+      </td>
+    </tr>`).join('')}
+    </tbody></table></div>`;
+}
+async function addMember(){
+  const name=document.getElementById('nm-name').value.trim();
+  const pw=document.getElementById('nm-pw').value.trim();
+  const type=document.getElementById('nm-type').value;
+  const sess=document.getElementById('nm-sess').value.trim();
+  const expiry=document.getElementById('nm-expiry').value;
+  if(!name){toast('Please enter a name.','err');return;}
+  if(!pw){toast('Please set a password.','err');return;}
+  showLoad();
+  try{
+    await DB.addMember({
+      name,password:pw,member_type:type,
+      sessions_balance:sess?parseInt(sess):null,
+      expiry_date:expiry||null,
+      mia_count:0
+    });
+    document.getElementById('nm-name').value='';
+    document.getElementById('nm-pw').value='';
+    document.getElementById('nm-sess').value='';
+    document.getElementById('nm-expiry').value='';
+    members=await DB.getMembers();
+    await loadAdmMembers();
+    // Refresh login dropdown
+    populateMemberSelect(document.getElementById('sel-member'),true);
+    toast(T('t_added'),'ok');
+  }catch(e){toast('Error adding member: '+e.message,'err');}
+  hideLoad();
+}
+async function delMbr(id){
+  if(!confirm('Delete this member? All their bookings will also be removed.'))return;
+  showLoad();
+  try{await DB.delMember(id);await loadAdmMembers();members=await DB.getMembers();populateMemberSelect(document.getElementById('sel-member'),true);toast(T('t_deleted'),'ok');}
+  catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+function openEditMbr(id){
+  const m=members.find(x=>x.id===id);if(!m)return;
+  document.getElementById('em-id').value=id;
+  document.getElementById('em-name').value=m.name;
+  document.getElementById('em-pw').value=m.password;
+  document.getElementById('em-type').value=m.member_type||'normal';
+  document.getElementById('em-sess').value=m.sessions_balance!=null?m.sessions_balance:'';
+  document.getElementById('em-expiry').value=m.expiry_date||'';
+  openModal('em-modal');
+}
+async function saveEdit(){
+  const id=parseInt(document.getElementById('em-id').value);
+  const name=document.getElementById('em-name').value.trim();
+  const pw=document.getElementById('em-pw').value.trim();
+  const type=document.getElementById('em-type').value;
+  const sess=document.getElementById('em-sess').value.trim();
+  const expiry=document.getElementById('em-expiry').value;
+  if(!name||!pw){toast('Name and password required.','err');return;}
+  showLoad();
+  try{
+    await DB.patchMember(id,{name,password:pw,member_type:type,sessions_balance:sess?parseInt(sess):null,expiry_date:expiry||null});
+    members=await DB.getMembers();
+    await loadAdmMembers();populateMemberSelect(document.getElementById('sel-member'),true);
+    closeModal('em-modal');toast(T('t_updated'),'ok');
+  }catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+
+async function loadAdmMia(){
+  const mb=await DB.getMembers();
+  const list=document.getElementById('mia-list');
+  list.innerHTML=`<div style="overflow-x:auto"><table class="atable">
+    <thead><tr><th>Member</th><th>Type</th><th>MIA</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+    ${mb.map(m=>{
+      const cnt=m.mia_count||0;
+      let st='🟢 OK',cls='mia-ok';
+      if(cnt>=3){st='🔴 At Limit';cls='mia-lim';}
+      else if(cnt>=2){st='🟡 Warning';cls='mia-warn';}
+      return `<tr>
+        <td>${m.name}</td>
+        <td><span class="tbadge ${m.member_type==='maintenance'?'t-maint':'t-normal'}" style="font-size:10px">${m.member_type==='maintenance'?'Maint':'Normal'}</span></td>
+        <td>${cnt}/3</td>
+        <td><span class="mia-ind ${cls}"></span>${st}</td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-red btn-sm" onclick="addMIA(${m.id})" style="margin-right:3px;margin-bottom:3px">+MIA</button>
+          <button class="btn btn-outline btn-sm" onclick="resetMIA(${m.id})">Reset</button>
+        </td>
+      </tr>`;
+    }).join('')}
+    </tbody></table></div>`;
+}
+async function addMIA(id){
+  const m=members.find(x=>x.id===id);
+  const nc=Math.min((m.mia_count||0)+1,99);
+  showLoad();
+  try{await DB.patchMember(id,{mia_count:nc});members=await DB.getMembers();await loadAdmMia();await loadAdmMembers();toast('MIA recorded for '+m.name,'ok');}
+  catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+async function resetMIA(id){
+  showLoad();
+  try{await DB.patchMember(id,{mia_count:0});members=await DB.getMembers();await loadAdmMia();toast('MIA count reset.','ok');}
+  catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+
+async function loadAdmBk(){
+  const mid=document.getElementById('af-mbr').value;
+  const wk=document.getElementById('af-wk').value;
+  showLoad();
+  try{
+    let bk=await DB.getBookings();
+    if(mid)bk=bk.filter(b=>b.member_id===parseInt(mid));
+    if(wk!=='all'){const{start,end}=weekRange(wk);bk=bk.filter(b=>b.slot_date>=start&&b.slot_date<=end);}
+    bk.sort((a,b)=>new Date(a.slot_date)-new Date(b.slot_date));
+    const list=document.getElementById('adm-bk-list');
+    if(!bk.length){list.innerHTML='<div class="empty">No bookings found.</div>';hideLoad();return;}
+    list.innerHTML=`<div style="overflow-x:auto"><table class="atable">
+      <thead><tr><th>Date</th><th>Time</th><th>Member</th><th></th></tr></thead>
+      <tbody>${bk.map(b=>`<tr>
+        <td>${b.slot_date}</td><td>${b.slot_time}</td>
+        <td>${b.members?.name||('ID:'+b.member_id)}</td>
+        <td><button class="btn btn-red btn-sm" onclick="admDelBk(${b.id})">✕</button></td>
+      </tr>`).join('')}</tbody></table></div>`;
+  }catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+async function admDelBk(id){
+  showLoad();
+  try{await DB.delBooking(id);await loadData();if(curMember)renderSched();await loadAdmBk();}
+  catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+async function admAddBk(){
+  const mid=parseInt(document.getElementById('ab-mbr').value);
+  const date=document.getElementById('ab-date').value;
+  const time=document.getElementById('ab-time').value;
+  if(!mid||!date){toast('Select member and date.','err');return;}
+  showLoad();
+  try{
+    await DB.addBooking({member_id:mid,slot_date:date,slot_time:time});
+    await loadData();if(curMember)renderSched();await loadAdmBk();
+    toast('Booking added.','ok');
+  }catch(e){toast('Error: '+e.message,'err');}
+  hideLoad();
+}
+
+// ============================================================
+// EXPORT PNG
+// ============================================================
+async function exportPNG(which){
+  showLoad();
+  try{
+    await loadData();
+    const dates=weekDates(which);
+    const dnames=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const frame=document.getElementById('expframe');
+    frame.style.cssText='position:fixed;top:0;left:0;width:860px;background:white;padding:24px;font-family:Nunito,sans-serif;z-index:9999';
+    let html=`<div style="text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:3px solid #0f3d2e">
+      <img src="data:image/png;base64,${LOGO}" style="height:56px;object-fit:contain;margin-bottom:8px"/><br>
+      <div style="font-family:serif;font-size:21px;color:#0f3d2e;font-weight:700">Tzu Chi Bukit Batok Gym Tonic</div>
+      <div style="color:#888;font-size:12px;margin-top:3px">Week: ${fd(dates[0])} — ${fd(dates[5])}</div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:11.5px">
+      <thead><tr style="background:#0f3d2e">
+        <th style="padding:7px 10px;color:#e8c96b;text-align:left;width:75px">Time</th>
+        ${dates.map((d,i)=>`<th style="padding:7px 8px;color:#e8c96b;text-align:center">${dnames[i]}<br><span style="font-weight:400;font-size:9.5px;opacity:.8">${fd(d)}</span></th>`).join('')}
+      </tr></thead><tbody>`;
+    const allSlots=[...new Set([...WD_SLOTS,...SAT_SLOTS])];
+    allSlots.forEach((ts,ri)=>{
+      html+=`<tr style="background:${ri%2===0?'#f8f4ed':'white'}">
+        <td style="padding:6px 9px;font-weight:800;color:#0d1b2e;border-right:2px solid #e5dfd4">${ts}</td>`;
+      dates.forEach((dateObj,di)=>{
+        const isSat=di===5,hasSlot=isSat?SAT_SLOTS.includes(ts):true;
+        if(!hasSlot){html+=`<td style="background:#efefef;text-align:center;color:#ccc;font-size:10px">—</td>`;return;}
+        if(isBlocked(dateObj,ts)){html+=`<td style="background:#fff0f0;text-align:center;color:#c0392b;font-size:10px;padding:5px">🚫 ${blockReason(dateObj,ts)}</td>`;return;}
+        const bks=slotBks(dateObj,ts);
+        const full=bks.length>=6;
+        html+=`<td style="padding:5px 7px;vertical-align:top;border-right:1px solid #e5dfd4">
+          <div style="font-weight:800;font-size:10px;color:${full?'#c0392b':'#1a5c45'};margin-bottom:2px">${bks.length}/6</div>
+          <div style="font-size:9.5px;color:#555;line-height:1.5">${bks.map(b=>b.members?.name||'').filter(Boolean).join('<br>')}</div>
+        </td>`;
+      });
+      html+='</tr>';
+    });
+    html+=`</tbody></table>
+      <div style="text-align:center;margin-top:12px;font-size:10px;color:#bbb;border-top:1px solid #e5dfd4;padding-top:8px">
+        Generated ${new Date().toLocaleString('en-SG')} · Tzu Chi Bukit Batok Gym Tonic
+      </div>`;
+    frame.innerHTML=html;
+    await new Promise(r=>setTimeout(r,400));
+    const canvas=await html2canvas(frame,{scale:2,useCORS:true,backgroundColor:'#ffffff'});
+    const a=document.createElement('a');a.download=`timetable_${which}_week.png`;a.href=canvas.toDataURL('image/png');a.click();
+  }catch(e){toast('Export error: '+e.message,'err');}
+  const frame=document.getElementById('expframe');
+  frame.style.zIndex='-1';frame.style.top='-9999px';frame.innerHTML='';
+  hideLoad();
+}
+
+// ============================================================
+// CHATBOT
+// ============================================================
+let chatOpen=false;
+function togChat(){chatOpen=!chatOpen;document.getElementById('cwin').classList.toggle('open',chatOpen);}
+function botMsg(t){const el=document.createElement('div');el.className='cmsg bot';el.textContent=t;document.getElementById('cmsgs').appendChild(el);document.getElementById('cmsgs').scrollTop=9999;}
+function usrMsg(t){const el=document.createElement('div');el.className='cmsg usr';el.textContent=t;document.getElementById('cmsgs').appendChild(el);document.getElementById('cmsgs').scrollTop=9999;}
+function chipQ(q){usrMsg(q);handleChat(q);}
+function sendChat(){const i=document.getElementById('cinp');const v=i.value.trim();if(!v)return;usrMsg(v);i.value='';handleChat(v);}
+function handleChat(q){
+  const l=q.toLowerCase();let r;
+  if(/class|schedule|time|when|slot|day/i.test(l))
+    r='📅 Mon–Fri: 8:30am, 9:20am, 10:10am, 11:00am, 1:00pm, 1:50pm, 2:40pm, 3:30pm, 4:20pm.\nSaturday morning only: 8:30am, 9:20am, 10:10am, 11:00am.\nMax 6 members per slot.';
+  else if(/rule|book|limit|how many|week|twice/i.test(l))
+    r='📋 Rules:\n• Normal members: 2 classes/week\n• Maintenance: 1 class/week\n• Max 1 class per day\n• Only current or next week\n• Booking closes 5 min before class';
+  else if(/cancel/i.test(l))
+    r='❌ You can cancel up to 1 hour before class. Within 1 hour, cancellation is locked.\n\nTap your booked slot (shown in green) to cancel.';
+  else if(/mia|no.show|absent|miss/i.test(l))
+    r='⚠️ MIA = No Show.\n• Max 3 strikes allowed\n• After 3 MIA, admin may revoke membership — no refund\n\nAlways cancel if you cannot attend!';
+  else if(/password|pw|login|sign/i.test(l))
+    r='🔑 Each member has a unique personal password set by the admin.\n\nSelect your name from the dropdown, then enter your password to sign in.';
+  else if(/session|balance|credit|expir/i.test(l))
+    r='💳 Your session balance and expiry date are shown after you log in (in the green bar).\n\nContact admin to top up sessions or extend membership.';
+  else if(/hi|hello|hey/i.test(l))
+    r="Hi there! 👋 I'm CourtBot.\n\nAsk me about: Classes? · Rules · Cancel? · MIA · Password";
+  else
+    r="I'm not sure about that 🤔\n\nTry asking:\n• Classes?\n• Rules\n• Cancel?\n• MIA\n• Password?\n\nFor other help, contact admin.";
+  setTimeout(()=>botMsg(r),350);
+}
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+
+</body>
+</html>
