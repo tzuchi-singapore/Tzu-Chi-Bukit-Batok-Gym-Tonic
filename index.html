@@ -206,7 +206,7 @@ select:focus,input:focus{border-color:var(--jade)}
 <div id="toast"></div>
 
 <main>
-  <div class="config-warn" id="config-warn" style="display:none">
+  <div class="config-warn" id="config-warn" style="display:none;visibility:hidden">
     <strong>⚠️ Setup Required — Supabase not configured</strong>
     Open <code>index.html</code> in a text editor. Find the two lines near the top of the &lt;script&gt; section and replace <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code> with your actual Supabase values. See the step-by-step guide.
   </div>
@@ -421,8 +421,8 @@ select:focus,input:focus{border-color:var(--jade)}
 // ============================================================
 // ⚙️  REPLACE THESE TWO VALUES WITH YOUR SUPABASE CREDENTIALS
 // ============================================================
-const SB_URL = 'YOUR_SUPABASE_URL';
-const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SB_URL = 'https://uwhfqjgjcknblefakyed.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3aGZxamdqY2tuYmxlZmFreWVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNTQxMTUsImV4cCI6MjA4ODYzMDExNX0.XyEWi2f8h-h0G6PV8LRr4qMkUFfZTDX061Y8DChy9go';
 const ADM_PW = 'tzuchi.123';
 // ============================================================
 
@@ -430,7 +430,7 @@ const LOGO = 'iVBORw0KGgoAAAANSUhEUgAAAfQAAADICAYAAAAeGRPoAAAAAXNSR0IArs4c6QAAAI
 document.getElementById('nav-logo').src = 'data:image/png;base64,'+LOGO;
 document.getElementById('hero-logo').src = 'data:image/png;base64,'+LOGO;
 
-if(SB_URL==='YOUR_SUPABASE_URL'||SB_KEY==='YOUR_SUPABASE_ANON_KEY'){
+if(false){ //
   document.getElementById('config-warn').style.display='block';
 }
 
@@ -560,7 +560,7 @@ function setLang(l){lang=l;applyLang();if(curMember)renderSched();}
 // SUPABASE REST
 // ============================================================
 async function sbFetch(method,table,body,qs=''){
-  if(SB_URL==='YOUR_SUPABASE_URL') throw new Error('Supabase not configured. Please update SB_URL and SB_KEY in the file.');
+  // Supabase configured
   const url=`${SB_URL}/rest/v1/${table}${qs}`;
   const headers={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
   if(method==='POST'||method==='PATCH') headers['Prefer']='return=representation';
