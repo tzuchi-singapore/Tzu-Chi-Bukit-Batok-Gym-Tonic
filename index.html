@@ -153,6 +153,22 @@ background: white; border-radius: 16px; padding: 20px;
 width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto;
 }
 .modal h3 { color: var(–jade-dark); margin-bottom: 14px; }
+.modal .login-btn {
+display: block; width: 100%; padding: 16px;
+font-size: 17px; font-weight: 700; border-radius: 12px;
+cursor: pointer; font-family: ‘Nunito’, sans-serif;
+border: none; -webkit-appearance: none; appearance: none;
+background: #1a5c45; color: white;
+box-shadow: 0 4px 12px rgba(26,92,69,0.4);
+margin-bottom: 10px;
+}
+.modal .cancel-btn {
+display: block; width: 100%; padding: 14px;
+font-size: 15px; font-weight: 600; border-radius: 12px;
+cursor: pointer; font-family: ‘Nunito’, sans-serif;
+background: transparent; color: #1a5c45;
+border: 2px solid #1a5c45; -webkit-appearance: none;
+}
 
 /* CHATBOT */
 #chatbot-bubble {
@@ -468,10 +484,10 @@ th, td { padding: 4px 2px; min-width: 48px; }
   <div class="modal">
     <h3>Admin Login</h3>
     <label>Admin Password</label>
-    <input type="password" id="admin-pass-input" placeholder="Enter admin password">
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn btn-jade" style="flex:1" onclick="submitAdminLogin()">Login</button>
-      <button class="btn btn-outline" style="flex:1" onclick="closeModal('admin-login-modal')">Cancel</button>
+    <input type="password" id="admin-pass-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')submitAdminLogin()">
+    <div style="margin-top:14px">
+      <button class="login-btn" onclick="submitAdminLogin()">🔑 Login</button>
+      <button class="cancel-btn" onclick="closeModal('admin-login-modal')">Cancel</button>
     </div>
   </div>
 </div>
