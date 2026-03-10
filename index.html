@@ -46,16 +46,16 @@ box-shadow: 0 2px 12px rgba(0,0,0,0.3);
 #navbar .brand-text h1 { font-size: 13px; line-height: 1.2; color: var(–gold-light); }
 #navbar .brand-text p { font-size: 10px; color: #aaa; }
 #navbar .nav-right { display: flex; gap: 8px; align-items: center; }
-.btn { padding: 7px 14px; border-radius: 8px; border: none; cursor: pointer; font-family: ‘Nunito’, sans-serif; font-weight: 600; font-size: 13px; transition: all 0.2s; }
-.btn-gold { background: var(–gold); color: var(–navy); }
+.btn { padding: 7px 14px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; font-family: ‘Nunito’, sans-serif; font-weight: 700; font-size: 13px; transition: all 0.2s; -webkit-appearance: none; }
+.btn-gold { background: var(–gold); color: var(–navy); border-color: var(–gold); }
 .btn-gold:hover { background: var(–gold-light); }
-.btn-jade { background: var(–jade); color: white; }
+.btn-jade { background: var(–jade); color: #ffffff !important; border-color: var(–jade); }
 .btn-jade:hover { background: var(–jade-light); }
-.btn-outline { background: transparent; border: 1.5px solid var(–gold); color: var(–gold); }
-.btn-outline:hover { background: var(–gold); color: var(–navy); }
-.btn-danger { background: var(–red); color: white; }
+.btn-outline { background: white; border: 2px solid var(–jade); color: var(–jade) !important; }
+.btn-outline:hover { background: var(–jade); color: white !important; }
+.btn-danger { background: var(–red); color: #ffffff !important; border-color: var(–red); }
 .btn-danger:hover { background: #e74c3c; }
-.btn-sm { padding: 4px 10px; font-size: 12px; }
+.btn-sm { padding: 6px 12px; font-size: 13px; font-weight: 700; }
 
 /* ANNOUNCEMENT BANNER */
 #announcement-banner {
@@ -221,11 +221,11 @@ display: flex; padding: 8px; gap: 6px; border-top: 1px solid #eee;
 display: flex; gap: 8px; margin-bottom: 12px;
 }
 .week-btn {
-flex: 1; padding: 8px; text-align: center; border: 2px solid var(–jade);
-border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px;
-transition: all 0.2s;
+flex: 1; padding: 10px; text-align: center; border: 2px solid var(–jade);
+border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 13px;
+transition: all 0.2s; background: white; color: var(–jade);
 }
-.week-btn.active { background: var(–jade); color: white; }
+.week-btn.active { background: var(–jade); color: #ffffff; }
 
 /* MIA BADGE */
 .mia-badge { font-size: 12px; }
@@ -237,8 +237,8 @@ transition: all 0.2s;
 
 /* ADMIN SECTION TABS */
 .admin-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-.admin-tab { padding: 7px 12px; border-radius: 8px; border: 1.5px solid var(–jade); cursor: pointer; font-size: 12px; font-weight: 600; color: var(–jade-dark); }
-.admin-tab.active { background: var(–jade); color: white; }
+.admin-tab { padding: 8px 12px; border-radius: 8px; border: 2px solid var(–jade); cursor: pointer; font-size: 12px; font-weight: 700; color: var(–jade-dark); background: white; }
+.admin-tab.active { background: var(–jade); color: #ffffff; }
 
 /* DIVIDER */
 .divider { border: none; border-top: 1px solid #e8e8e8; margin: 10px 0; }
