@@ -269,6 +269,102 @@ font-size: 13px;
 table { font-size: 9px; }
 th, td { padding: 4px 2px; min-width: 48px; }
 }
+
+/* ===== GLOBAL BUTTON VISIBILITY OVERRIDE ===== */
+button, .btn, input[type=button], input[type=submit] {
+-webkit-appearance: none !important;
+appearance: none !important;
+}
+/* All jade/green buttons = dark green bg + WHITE text */
+.btn-jade, button.btn-jade {
+background-color: #1a5c45 !important;
+color: #ffffff !important;
+border: 2px solid #1a5c45 !important;
+font-weight: 700 !important;
+}
+/* All danger/red buttons = red bg + WHITE text */
+.btn-danger, button.btn-danger {
+background-color: #c0392b !important;
+color: #ffffff !important;
+border: 2px solid #c0392b !important;
+font-weight: 700 !important;
+}
+/* All gold buttons = gold bg + BLACK text */
+.btn-gold, button.btn-gold {
+background-color: #c9a84c !important;
+color: #1a1a1a !important;
+font-weight: 700 !important;
+}
+/* All outline buttons = light grey bg + BLACK text */
+.btn-outline, button.btn-outline {
+background-color: #e8e8e8 !important;
+color: #1a1a1a !important;
+border: 2px solid #555555 !important;
+font-weight: 700 !important;
+}
+/* Week selector buttons - inactive = light grey + BLACK text */
+.week-btn {
+background-color: #e8e8e8 !important;
+color: #1a1a1a !important;
+font-weight: 700 !important;
+border: 2px solid #1a5c45 !important;
+}
+.week-btn.active {
+background-color: #1a5c45 !important;
+color: #ffffff !important;
+}
+/* Admin tabs - inactive = light grey + BLACK text */
+.admin-tab {
+background-color: #e8e8e8 !important;
+color: #1a1a1a !important;
+border: 2px solid #888888 !important;
+font-weight: 700 !important;
+}
+.admin-tab.active {
+background-color: #1a5c45 !important;
+color: #ffffff !important;
+border-color: #1a5c45 !important;
+}
+/* Slot book/cancel mini buttons */
+.slot-btn.book {
+background-color: #1a5c45 !important;
+color: #ffffff !important;
+font-weight: 700 !important;
+}
+.slot-btn.cancel {
+background-color: #c0392b !important;
+color: #ffffff !important;
+font-weight: 700 !important;
+}
+/* Modal login button */
+.login-btn {
+background-color: #1a5c45 !important;
+color: #ffffff !important;
+font-weight: 700 !important;
+}
+.cancel-btn {
+background-color: #e8e8e8 !important;
+color: #1a1a1a !important;
+border: 2px solid #555 !important;
+font-weight: 700 !important;
+}
+/* Nav buttons */
+#navbar .btn-gold {
+background-color: #c9a84c !important;
+color: #1a1a1a !important;
+}
+#navbar .btn-outline {
+background-color: transparent !important;
+color: #FFE57A !important;
+border: 1.5px solid #FFE57A !important;
+}
+/* Chip buttons in chatbot */
+.chip {
+color: #1a1a1a !important;
+background: #e8f5ee !important;
+font-weight: 700 !important;
+}
+/* ===== END OVERRIDE ===== */
 </style>
 
 </head>
