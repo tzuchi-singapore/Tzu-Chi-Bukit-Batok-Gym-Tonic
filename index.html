@@ -381,8 +381,8 @@ font-weight: 700 !important;
     </div>
   </div>
   <div class="nav-right">
-    <button class="btn btn-outline btn-sm" onclick="toggleLang()" id="lang-btn">中文</button>
-    <button class="btn btn-gold btn-sm" onclick="openAdminLogin()">Admin</button>
+    <button onclick="toggleLang()" id="lang-btn" style="padding:7px 14px;background-color:transparent;color:#FFE57A;border:1.5px solid #FFE57A;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;">中文</button>
+    <button onclick="openAdminLogin()" style="padding:7px 14px;background-color:#c9a84c;color:#1a1a1a;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;">Admin</button>
   </div>
 </div>
 
@@ -408,7 +408,7 @@ font-weight: 700 !important;
     <select id="member-select"><option value="">-- Select --</option></select>
     <label id="lbl-pass">Password</label>
     <input type="password" id="member-pass" placeholder="Enter your password">
-    <button class="btn btn-jade" onclick="loginMember()" id="btn-login" style="width:100%">Login / Unlock</button>
+    <button onclick="loginMember()" id="btn-login" style="width:100%;padding:14px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:8px;font-size:16px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">Login / Unlock</button>
   </div>
 
   <div id="member-info-section" style="display:none">
@@ -418,15 +418,15 @@ font-weight: 700 !important;
       <div class="info-row"><span class="info-label" id="lbl-expiry-label">Expiry Date</span><span class="info-value" id="info-expiry">-</span></div>
       <div class="info-row"><span class="info-label" id="lbl-mia-label">MIA Count</span><span class="info-value" id="info-mia">-</span></div>
       <div class="info-row"><span class="info-label" id="lbl-type-label">Member Type</span><span class="info-value" id="info-type">-</span></div>
-      <button class="btn btn-outline btn-sm" onclick="logoutMember()" id="btn-logout" style="margin-top:8px">Logout</button>
+      <button onclick="logoutMember()" id="btn-logout" style="margin-top:8px;padding:8px 16px;background-color:#e0e0e0;color:#1a1a1a;border:2px solid #555;border-radius:8px;font-size:14px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">Logout</button>
     </div>
 
 ```
 <div class="card">
   <h3 id="lbl-book-slot">Book a Slot</h3>
   <div class="week-selector">
-    <div class="week-btn active" id="wbtn-this" onclick="selectBookWeek('this')">This Week</div>
-    <div class="week-btn" id="wbtn-next" onclick="selectBookWeek('next')">Next Week</div>
+    <div id="wbtn-this" onclick="selectBookWeek('this')" style="flex:1;padding:10px;text-align:center;border:2px solid #1a5c45;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;background-color:#1a5c45;color:#ffffff;">This Week</div>
+    <div id="wbtn-next" onclick="selectBookWeek('next')" style="flex:1;padding:10px;text-align:center;border:2px solid #1a5c45;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;background-color:#e0e0e0;color:#1a1a1a;">Next Week</div>
   </div>
   <div id="book-grid"></div>
 </div>
@@ -451,8 +451,8 @@ font-weight: 700 !important;
   <div class="card">
     <h3 id="lbl-timetable">Weekly Timetable</h3>
     <div class="week-selector">
-      <div class="week-btn active" id="twbtn-this" onclick="selectViewWeek('this')">This Week</div>
-      <div class="week-btn" id="twbtn-next" onclick="selectViewWeek('next')">Next Week</div>
+      <div id="twbtn-this" onclick="selectViewWeek('this')" style="flex:1;padding:10px;text-align:center;border:2px solid #1a5c45;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;background-color:#1a5c45;color:#ffffff;">This Week</div>
+      <div id="twbtn-next" onclick="selectViewWeek('next')" style="flex:1;padding:10px;text-align:center;border:2px solid #1a5c45;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;background-color:#e0e0e0;color:#1a1a1a;">Next Week</div>
     </div>
     <div class="timetable-grid" id="timetable-container"></div>
   </div>
@@ -462,12 +462,12 @@ font-weight: 700 !important;
 
 <div id="section-admin" class="section">
   <div class="admin-tabs">
-    <div class="admin-tab active" onclick="showAdminTab('announcements')">📢 Announcements</div>
-    <div class="admin-tab" onclick="showAdminTab('bookings')">📋 Bookings</div>
-    <div class="admin-tab" onclick="showAdminTab('members')">👥 Members</div>
-    <div class="admin-tab" onclick="showAdminTab('blocks')">🚫 Blocks</div>
-    <div class="admin-tab" onclick="showAdminTab('mia')">⚠️ MIA</div>
-    <div class="admin-tab" onclick="showAdminTab('export')">📤 Export</div>
+    <div onclick="showAdminTab('announcements')" style="padding:8px 12px;border-radius:8px;border:2px solid #1a5c45;cursor:pointer;font-size:13px;font-weight:700;background-color:#1a5c45;color:#ffffff;display:inline-block;">📢 Announcements</div>
+    <div onclick="showAdminTab('bookings')" style="padding:8px 12px;border-radius:8px;border:2px solid #888;cursor:pointer;font-size:13px;font-weight:700;background-color:#e0e0e0;color:#1a1a1a;display:inline-block;">📋 Bookings</div>
+    <div onclick="showAdminTab('members')" style="padding:8px 12px;border-radius:8px;border:2px solid #888;cursor:pointer;font-size:13px;font-weight:700;background-color:#e0e0e0;color:#1a1a1a;display:inline-block;">👥 Members</div>
+    <div onclick="showAdminTab('blocks')" style="padding:8px 12px;border-radius:8px;border:2px solid #888;cursor:pointer;font-size:13px;font-weight:700;background-color:#e0e0e0;color:#1a1a1a;display:inline-block;">🚫 Blocks</div>
+    <div onclick="showAdminTab('mia')" style="padding:8px 12px;border-radius:8px;border:2px solid #888;cursor:pointer;font-size:13px;font-weight:700;background-color:#e0e0e0;color:#1a1a1a;display:inline-block;">⚠️ MIA</div>
+    <div onclick="showAdminTab('export')" style="padding:8px 12px;border-radius:8px;border:2px solid #888;cursor:pointer;font-size:13px;font-weight:700;background-color:#e0e0e0;color:#1a1a1a;display:inline-block;">📤 Export</div>
   </div>
 
   <!-- Announcements -->
@@ -477,7 +477,7 @@ font-weight: 700 !important;
       <h3>Post Announcement</h3>
       <label>Message</label>
       <input type="text" id="ann-text" placeholder="Type announcement...">
-      <button class="btn btn-jade" onclick="postAnnouncement()">Post</button>
+      <button onclick="postAnnouncement()" style="padding:10px 20px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">Post</button>
       <hr class="divider">
       <div id="ann-list"></div>
     </div>
@@ -491,10 +491,10 @@ font-weight: 700 !important;
       <label>Filter by Member</label>
       <select id="admin-filter-member"><option value="">All Members</option></select>
       <div class="week-selector">
-        <div class="week-btn active" id="abwbtn-this" onclick="selectAdminWeek('this')">This Week</div>
-        <div class="week-btn" id="abwbtn-next" onclick="selectAdminWeek('next')">Next Week</div>
+        <div id="abwbtn-this" onclick="selectAdminWeek('this')" style="flex:1;padding:10px;text-align:center;border:2px solid #1a5c45;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;background-color:#1a5c45;color:#ffffff;">This Week</div>
+        <div id="abwbtn-next" onclick="selectAdminWeek('next')" style="flex:1;padding:10px;text-align:center;border:2px solid #1a5c45;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;background-color:#e0e0e0;color:#1a1a1a;">Next Week</div>
       </div>
-      <button class="btn btn-jade btn-sm" onclick="loadAdminBookings()">Refresh</button>
+      <button onclick="loadAdminBookings()" style="padding:8px 16px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">Refresh</button>
       <div id="admin-bookings-list" style="margin-top:10px"></div>
     </div>
     <div class="card">
@@ -505,7 +505,7 @@ font-weight: 700 !important;
       <input type="date" id="admin-add-date">
       <label>Time</label>
       <select id="admin-add-time"></select>
-      <button class="btn btn-jade" onclick="adminAddBooking()">Add Booking</button>
+      <button onclick="adminAddBooking()" style="width:100%;padding:12px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:8px;font-size:15px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;margin-top:4px;">Add Booking</button>
     </div>
   </div>
 
@@ -527,7 +527,7 @@ font-weight: 700 !important;
       <input type="number" id="new-member-balance" placeholder="e.g. 20" value="20">
       <label>Expiry Date</label>
       <input type="date" id="new-member-expiry">
-      <button class="btn btn-jade" onclick="addMember()">Add Member</button>
+      <button onclick="addMember()" style="width:100%;padding:12px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:8px;font-size:15px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;margin-top:4px;">Add Member</button>
     </div>
     <div class="card">
       <h3>Member List</h3>
@@ -548,7 +548,7 @@ font-weight: 700 !important;
       </select>
       <label>Reason</label>
       <input type="text" id="block-reason" placeholder="e.g. Public Holiday">
-      <button class="btn btn-jade" onclick="addBlock()">Block</button>
+      <button onclick="addBlock()" style="width:100%;padding:12px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:8px;font-size:15px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;margin-top:4px;">Block</button>
       <hr class="divider">
       <div id="blocks-list"></div>
     </div>
@@ -566,8 +566,8 @@ font-weight: 700 !important;
       <label>Member</label>
       <select id="mia-member-select"></select>
       <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn btn-danger" style="flex:1" onclick="addMia()">+1 MIA</button>
-        <button class="btn btn-jade" style="flex:1" onclick="resetMia()">Reset MIA</button>
+        <button onclick="addMia()" style="flex:1;padding:12px;background-color:#c0392b;color:#ffffff;border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">+1 MIA</button>
+        <button onclick="resetMia()" style="flex:1;padding:12px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">Reset MIA</button>
       </div>
     </div>
   </div>
@@ -579,8 +579,8 @@ font-weight: 700 !important;
       <h3>Export Timetable as PNG</h3>
       <p style="font-size:13px;color:#666;margin-bottom:12px">Download a shareable PNG for WhatsApp/Telegram.</p>
       <div style="display:flex;gap:8px">
-        <button class="btn btn-jade" style="flex:1" onclick="exportTimetable('this')">This Week PNG</button>
-        <button class="btn btn-gold" style="flex:1" onclick="exportTimetable('next')">Next Week PNG</button>
+        <button onclick="exportTimetable('this')" style="flex:1;padding:12px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">This Week PNG</button>
+        <button onclick="exportTimetable('next')" style="flex:1;padding:12px;background-color:#c9a84c;color:#1a1a1a;border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">Next Week PNG</button>
       </div>
     </div>
   </div>
@@ -594,8 +594,8 @@ font-weight: 700 !important;
     <label>Admin Password</label>
     <input type="password" id="admin-pass-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')submitAdminLogin()">
     <div style="margin-top:14px">
-      <button class="login-btn" onclick="submitAdminLogin()">🔑 Login</button>
-      <button class="cancel-btn" onclick="closeModal('admin-login-modal')">Cancel</button>
+      <button onclick="submitAdminLogin()" style="display:block;width:100%;padding:16px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:12px;font-size:17px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;margin-bottom:10px;">🔑 Login</button>
+      <button onclick="closeModal('admin-login-modal')" style="display:block;width:100%;padding:14px;background-color:#e0e0e0;color:#1a1a1a;border:2px solid #888;border-radius:12px;font-size:15px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">Cancel</button>
     </div>
   </div>
 </div>
@@ -620,8 +620,8 @@ font-weight: 700 !important;
     <label>Expiry Date</label>
     <input type="date" id="edit-member-expiry">
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn btn-jade" style="flex:1" onclick="saveMemberEdit()">Save</button>
-      <button class="btn btn-outline" style="flex:1" onclick="closeModal('edit-member-modal')">Cancel</button>
+      <button onclick="saveMemberEdit()" style="flex:1;padding:12px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:8px;font-size:15px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">Save</button>
+      <button onclick="closeModal('edit-member-modal')" style="flex:1;padding:12px;background-color:#e0e0e0;color:#1a1a1a;border:2px solid #888;border-radius:8px;font-size:15px;font-weight:700;font-family:Nunito,sans-serif;cursor:pointer;">Cancel</button>
     </div>
   </div>
 </div>
@@ -646,7 +646,7 @@ font-weight: 700 !important;
     </div>
     <div id="chat-input-row">
       <input type="text" id="chat-input" placeholder="Ask a question..." style="flex:1;margin:0" onkeydown="if(event.key==='Enter')sendChat()">
-      <button id="chat-send" onclick="sendChat()">Send</button>
+      <button id="chat-send" onclick="sendChat()" style="padding:8px 14px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Send</button>
     </div>
   </div>
   <button id="chat-toggle" onclick="toggleChat()">💬</button>
@@ -857,8 +857,12 @@ function populateMemberDropdowns() {
 // ===================== BOOK GRID =====================
 function selectBookWeek(w) {
   bookWeek = w;
-  document.getElementById('wbtn-this').classList.toggle('active', w === 'this');
-  document.getElementById('wbtn-next').classList.toggle('active', w === 'next');
+  const btnThis = document.getElementById('wbtn-this');
+  const btnNext = document.getElementById('wbtn-next');
+  btnThis.style.backgroundColor = w==='this' ? '#1a5c45' : '#e0e0e0';
+  btnThis.style.color = w==='this' ? '#ffffff' : '#1a1a1a';
+  btnNext.style.backgroundColor = w==='next' ? '#1a5c45' : '#e0e0e0';
+  btnNext.style.color = w==='next' ? '#ffffff' : '#1a1a1a';
   renderBookGrid();
 }
 function renderBookGrid() {
@@ -901,14 +905,14 @@ function renderBookGrid() {
           // Check cancellation window (1 hour)
           const cancelCutoff = new Date(slotDT.getTime() - 60*60000);
           if (now < cancelCutoff) {
-            slotHtml += `<button class="slot-btn cancel" style="font-size:11px;padding:3px 8px" onclick="cancelBooking('${myBooking.id}')">Cancel ✕</button>`;
+            slotHtml += `<button onclick="cancelBooking('${myBooking.id}')" style="font-size:12px;padding:5px 10px;background-color:#c0392b;color:#ffffff;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Cancel ✕</button>`;
           } else {
             slotHtml += `<span style="font-size:11px;color:var(--jade-dark);font-weight:700">✅ Booked (no cancel)</span>`;
           }
         } else if (count >= MAX_PER_SLOT) {
           slotHtml += `<span style="font-size:11px;color:var(--red)">Full</span>`;
         } else {
-          slotHtml += `<button class="slot-btn book" style="font-size:11px;padding:3px 8px" onclick="bookSlot('${ds}','${t}')">Book ➕</button>`;
+          slotHtml += `<button onclick="bookSlot('${ds}','${t}')" style="font-size:12px;padding:5px 10px;background-color:#1a5c45;color:#ffffff;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Book ➕</button>`;
         }
         slotHtml += '</div>';
         html += slotHtml;
@@ -1014,7 +1018,7 @@ function renderMyBookings() {
         <div class="booking-time">${b.slot_time}</div>
         <div class="booking-day">${b.slot_date} ${b.is_mia ? '🔴 MIA' : (isPast ? '✅ Done' : '📌 Upcoming')}</div>
       </div>
-      ${canCancel && !isPast && !b.is_mia ? `<button class="btn btn-danger btn-sm" onclick="cancelBooking('${b.id}')">Cancel</button>` : ''}
+      ${canCancel && !isPast && !b.is_mia ? `<button onclick="cancelBooking('${b.id}')" style="padding:7px 14px;background-color:#c0392b;color:#ffffff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>` : ''}
     </div>`;
   }).join('');
 }
@@ -1022,8 +1026,12 @@ function renderMyBookings() {
 // ===================== TIMETABLE =====================
 function selectViewWeek(w) {
   viewWeek = w;
-  document.getElementById('twbtn-this').classList.toggle('active', w==='this');
-  document.getElementById('twbtn-next').classList.toggle('active', w==='next');
+  const btnThis = document.getElementById('twbtn-this');
+  const btnNext = document.getElementById('twbtn-next');
+  btnThis.style.backgroundColor = w==='this' ? '#1a5c45' : '#e0e0e0';
+  btnThis.style.color = w==='this' ? '#ffffff' : '#1a1a1a';
+  btnNext.style.backgroundColor = w==='next' ? '#1a5c45' : '#e0e0e0';
+  btnNext.style.color = w==='next' ? '#ffffff' : '#1a1a1a';
   renderTimetable();
 }
 function renderTimetable(target) {
@@ -1119,9 +1127,15 @@ function renderAdminSections() {
 }
 function showAdminTab(name) {
   document.querySelectorAll('.admin-subsection').forEach(el => el.style.display='none');
-  document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(el => {
+    el.style.backgroundColor='#e0e0e0';
+    el.style.color='#1a1a1a';
+    el.style.borderColor='#888';
+  });
   document.getElementById(`admin-${name}`).style.display='block';
-  event.currentTarget.classList.add('active');
+  event.currentTarget.style.backgroundColor='#1a5c45';
+  event.currentTarget.style.color='#ffffff';
+  event.currentTarget.style.borderColor='#1a5c45';
   if (name==='mia') renderMiaTracker();
   if (name==='members') renderAdminMembers();
   if (name==='blocks') renderBlocks();
@@ -1161,8 +1175,12 @@ async function adminAddBooking() {
 }
 function selectAdminWeek(w) {
   adminWeek=w;
-  document.getElementById('abwbtn-this').classList.toggle('active',w==='this');
-  document.getElementById('abwbtn-next').classList.toggle('active',w==='next');
+  const btnThis = document.getElementById('abwbtn-this');
+  const btnNext = document.getElementById('abwbtn-next');
+  btnThis.style.backgroundColor = w==='this' ? '#1a5c45' : '#e0e0e0';
+  btnThis.style.color = w==='this' ? '#ffffff' : '#1a1a1a';
+  btnNext.style.backgroundColor = w==='next' ? '#1a5c45' : '#e0e0e0';
+  btnNext.style.color = w==='next' ? '#ffffff' : '#1a1a1a';
   loadAdminBookings();
 }
 function populateAdminTimeDropdowns() {
