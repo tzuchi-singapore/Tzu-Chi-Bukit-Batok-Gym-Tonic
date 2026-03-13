@@ -722,8 +722,8 @@ function renderSchedule(){
         if(canBook) cls+=' bookable';
         slotEl.className=cls;
         const remaining=SLOT_LIMIT-totalBooked;
-        const countLabel=lang==='zh'?`${totalBooked}/${SLOT_LIMIT} 已约`:`${totalBooked}/${SLOT_LIMIT} booked`;
-        const leftLabel=lang==='zh'?`剩${remaining}`:`${remaining} left`;
+        const countLabel=currentLang==='zh'?`${totalBooked}/${SLOT_LIMIT} 已约`:`${totalBooked}/${SLOT_LIMIT} booked`;
+        const leftLabel=currentLang==='zh'?`剩${remaining}`:`${remaining} left`;
         let infoTxt='';
         if(!past&&!slotBlocked){
           infoTxt=isFull
@@ -761,11 +761,11 @@ function renderSchedule(){
 // BOOKING ACTIONS
 // ═══════════════════════════════════════════
 function promptBook(ymd,tm,label,type){
-  if(!currentMember){showToast(lang==='zh'?'请先选择您的名字！':'Select your name first!','error');return;}
+  if(!currentMember){showToast(currentLang==='zh'?'请先选择您的名字！':'Select your name first!','error');return;}
   if(!memberUnlocked){showMemberLogin();return;}
   pendingAction={action:'book',ymd,t:tm,label,classType:type};
   document.getElementById('modalTitle').textContent=t('confirmBooking');
-  document.getElementById('modalBody').innerHTML=`${lang==='zh'?'预约人':'Booking for'}: <strong>${currentMember}</strong><br>📌 ${label}<br>📅 ${fmtDate(parseYMD(ymd))} ${lang==='zh'?'时间':'at'} <strong>${timeLabel(tm)}</strong>`;
+  document.getElementById('modalBody').innerHTML=`${currentLang==='zh'?'预约人':'Booking for'}: <strong>${currentMember}</strong><br>📌 ${label}<br>📅 ${fmtDate(parseYMD(ymd))} ${currentLang==='zh'?'时间':'at'} <strong>${timeLabel(tm)}</strong>`;
   document.getElementById('modalConfirmBtn').textContent=t('bookNow');
   document.getElementById('modalConfirmBtn').onclick=executeAction;
   document.getElementById('confirmModal').classList.remove('hidden');
@@ -774,7 +774,7 @@ function promptCancel(ymd,tm,label){
   if(!memberUnlocked){showMemberLogin();return;}
   pendingAction={action:'cancel',ymd,t:tm,label};
   document.getElementById('modalTitle').textContent=t('confirmCancel');
-  document.getElementById('modalBody').innerHTML=`${lang==='zh'?'取消预约':'Cancel booking'}:<br><strong>${label}</strong><br>📅 ${fmtDate(parseYMD(ymd))} ${lang==='zh'?'时间':'at'} <strong>${timeLabel(tm)}</strong>`;
+  document.getElementById('modalBody').innerHTML=`${currentLang==='zh'?'取消预约':'Cancel booking'}:<br><strong>${label}</strong><br>📅 ${fmtDate(parseYMD(ymd))} ${currentLang==='zh'?'时间':'at'} <strong>${timeLabel(tm)}</strong>`;
   document.getElementById('modalConfirmBtn').textContent=t('yesCancel');
   document.getElementById('modalConfirmBtn').onclick=executeAction;
   document.getElementById('confirmModal').classList.remove('hidden');
