@@ -187,7 +187,6 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);min-h
   <div style="display:flex;align-items:center;gap:.6rem">
     <button id="langBtn" onclick="toggleLang()" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:white;border-radius:999px;padding:.3rem .8rem;font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;white-space:nowrap">中文</button>
   <div style="display:flex;align-items:center;gap:.7rem">
-    <button id="langToggle" onclick="toggleLang()" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:white;border-radius:999px;padding:.3rem .8rem;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;white-space:nowrap">中文</button>
     <div class="nav-member" id="navMemberInfo" style="display:none">
     <strong id="navMemberName">—</strong><span id="navLockStatus" style="font-size:.7rem;color:var(--jade3)">🔓 Unlocked</span>
   </div>
@@ -1592,51 +1591,7 @@ function applyLang(){
   const expBtn = document.querySelector('#adminPanel .admin-section:last-of-type button');
 }
 
-// ═══════════════════════════════════════════
-// BILINGUAL (EN / ZH)
-// ═══════════════════════════════════════════
-let lang = 'en';
-;
 
-
-function t(key, ...args){
-  const val = TRANSLATIONS[lang][key];
-  if(typeof val === 'function') return val(...args);
-  return val || key;
-}
-
-function toggleLang(){
-  lang = lang === 'en' ? 'zh' : 'en';
-  document.getElementById('langToggle').textContent = lang === 'en' ? '中文' : 'EN';
-  applyLangToUI();
-  renderSchedule();
-  renderMyBookings();
-  updateMiaBadge();
-  updateUnlockBtn();
-  updateNavMember();
-}
-
-function applyLangToUI(){
-  // Hero
-  const heroTitle = document.getElementById('heroTitleEl');
-  const heroSub = document.getElementById('heroSubEl');
-  const heroBadge = document.getElementById('heroBadgeEl');
-  if(heroTitle) heroTitle.textContent = t('heroTitle');
-  if(heroSub) heroSub.textContent = t('heroSub');
-  if(heroBadge) heroBadge.textContent = t('heroBadge');
-  // Member bar
-  document.querySelector('.member-bar label').textContent = t('selectMember');
-  const sel = document.getElementById('memberSelect');
-  if(sel.options[0]) sel.options[0].text = t('chooseName');
-  // Tabs
-  const tabs = document.querySelectorAll('.tab');
-  const tabKeys = ['bookClass','myBookings','rules','admin'];
-  tabs.forEach((tab,i) => { if(tabKeys[i]) tab.textContent = t(tabKeys[i]); });
-  // MIA badge
-  updateMiaBadge();
-  // Nav lock status
-  if(currentMember) updateNavMember();
-}
 // ═══════════════════════════════════════════
 // START
 // ═══════════════════════════════════════════
