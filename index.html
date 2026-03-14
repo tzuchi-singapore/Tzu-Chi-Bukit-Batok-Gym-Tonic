@@ -82,9 +82,40 @@ td { padding: 5px 3px; text-align: center; border: 1px solid #e0e0e0; vertical-a
 .slot-time { font-size: 12px; font-weight: 700; min-width: 52px; color: var(–jade-dark); }
 .slot-cnt { font-size: 11px; color: #888; min-width: 36px; }
 
-#toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(–navy); color: white; padding: 12px 20px; border-radius: 10px; font-size: 14px; z-index: 9999; display: none; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 340px; }
-#toast.success { background: var(–jade); }
-#toast.error { background: var(–red); }
+#toast {
+position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+padding: 14px 24px; border-radius: 12px; font-size: 15px; font-weight: 700;
+z-index: 9999; display: none; text-align: center;
+max-width: 320px; width: 90%;
+box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+border: 2px solid transparent;
+font-family: ‘Nunito’, sans-serif;
+line-height: 1.4;
+/* default: dark info */
+background: #1a1a1a;
+color: #ffffff;
+border-color: #444;
+}
+#toast.success {
+background: #1b5e20;   /* deep green */
+color: #ffffff;
+border-color: #4caf50;
+}
+#toast.error {
+background: #b71c1c;   /* deep red */
+color: #ffffff;
+border-color: #ef5350;
+}
+#toast.warning {
+background: #e65100;   /* deep orange */
+color: #ffffff;
+border-color: #ff9800;
+}
+#toast.info {
+background: #0d47a1;   /* deep blue */
+color: #ffffff;
+border-color: #42a5f5;
+}
 
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: center; justify-content: center; }
 .modal-overlay.open { display: flex; }
@@ -609,7 +640,7 @@ async function loginMember() {
     const exp = parseLocalDate(member.expiry_date);
     const now = new Date(); now.setHours(0,0,0,0);
     if (exp < now) {
-      showToast('⚠️ Your membership expired on ' + member.expiry_date + '. Bookings blocked.', 'error');
+      showToast('Your membership expired on ' + member.expiry_date + '. Bookings blocked.', 'warning');
       // Still allow login so they can see their history, but set expired flag
     }
   }
@@ -743,14 +774,14 @@ function renderBookGrid() {
 
 // ===================== BOOK / CANCEL =====================
 async function bookSlot(date, time) {
-  if (!currentMember) { showToast('Please login first', 'error'); return; }
+  if (!currentMember) { showToast('Please login first', 'warning'); return; }
 
   // --- Rule 1: 1 booking per day ---
   const myDayBks = allBookings.filter(b =>
     String(b.member_id) === String(currentMember.id) && b.slot_date === date && !b.is_mia
   );
   if (myDayBks.length >= 1) {
-    showToast('Only 1 booking per day allowed.', 'error'); return;
+    showToast('Only 1 booking per day allowed.', 'warning'); return;
   }
 
   // --- Rule 2: weekly limit (Normal=2, Maintenance=1) ---
@@ -760,7 +791,7 @@ async function bookSlot(date, time) {
   );
   const maxPerWeek = currentMember.member_type === 'maintenance' ? 1 : 2;
   if (myWeekBks.length >= maxPerWeek) {
-    showToast(`Max ${maxPerWeek} booking(s)/week for your membership type.`, 'error'); return;
+    showToast(`Max ${maxPerWeek} booking(s)/week for your membership type.`, 'warning'); return;
   }
 
   // --- Rule 3: expiry --- check both today AND the slot date
@@ -776,7 +807,7 @@ async function bookSlot(date, time) {
 
   // --- Rule 4: balance ---
   if (currentMember.balance_sessions !== null && currentMember.balance_sessions <= 0) {
-    showToast('No sessions remaining.', 'error'); return;
+    showToast('No sessions remaining.', 'warning'); return;
   }
 
   try {
@@ -1044,7 +1075,7 @@ async function adminAddBooking() {
   const mid  = document.getElementById('admin-add-member').value;
   const date = document.getElementById('admin-add-date').value;
   const time = document.getElementById('admin-add-time').value;
-  if (!mid || !date || !time) { showToast('Fill all fields', 'error'); return; }
+  if (!mid || !date || !time) { showToast('Fill all fields', 'warning'); return; }
   try {
     await sbFetch('bookings', { method: 'POST', body: { member_id: mid, slot_date: date, slot_time: time, is_mia: false } });
     // Deduct balance
@@ -1114,17 +1145,17 @@ function updateBulkPreview() {
 async function adminBulkBooking() {
   const mid  = document.getElementById('bulk-member').value;
   const time = document.getElementById('bulk-time').value;
-  if (!mid || !time) { showToast('Select member and time', 'error'); return; }
+  if (!mid || !time) { showToast('Select member and time', 'warning'); return; }
 
   const candidates = getBulkCandidates();
-  if (!candidates.length) { showToast('No candidate dates found.', 'error'); return; }
+  if (!candidates.length) { showToast('No candidate dates found.', 'warning'); return; }
 
   const now = new Date();
   let booked = 0, skipped = 0;
   // Track balance locally as we deduct
   let bal = allMembers.find(m => String(m.id) === mid)?.balance_sessions ?? null;
 
-  showToast('Processing…', '');
+  showToast('Processing…', 'info');
 
   for (const d of candidates) {
     const ds  = fmtDate(d);
@@ -1158,7 +1189,7 @@ async function addMember() {
   const type   = document.getElementById('new-member-type').value;
   const bal    = parseInt(document.getElementById('new-member-balance').value) || 0;
   const expiry = document.getElementById('new-member-expiry').value;
-  if (!name || !pass) { showToast('Name and password required', 'error'); return; }
+  if (!name || !pass) { showToast('Name and password required', 'warning'); return; }
   await sbFetch('members', { method: 'POST', body: { name, password: pass, member_type: type, balance_sessions: bal, expiry_date: expiry || null } });
   showToast('Member added', 'success');
   await loadAll(); renderAdminMembers();
@@ -1214,7 +1245,7 @@ async function addBlock() {
   const date   = document.getElementById('block-date').value;
   const time   = document.getElementById('block-time').value;
   const reason = document.getElementById('block-reason').value.trim();
-  if (!date) { showToast('Select a date', 'error'); return; }
+  if (!date) { showToast('Select a date', 'warning'); return; }
   await sbFetch('blocked_slots', { method: 'POST', body: { block_date: date, block_time: time || null, reason: reason || 'Blocked' } });
   showToast('Block added', 'success');
   await loadAll(); renderBlocks();
@@ -1340,8 +1371,19 @@ function showTab(name) {
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function showToast(msg, type = '') {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = type; t.style.display = 'block';
-  setTimeout(() => t.style.display = 'none', 3500);
+  // Add emoji prefix based on type for extra visibility
+  let prefix = '';
+  if (type === 'success') prefix = '✅ ';
+  else if (type === 'error') prefix = '❌ ';
+  else if (type === 'warning') prefix = '⚠️ ';
+  else if (type === 'info') prefix = 'ℹ️ ';
+  else prefix = '💬 ';
+  t.textContent = prefix + msg;
+  t.className = type;
+  t.style.display = 'block';
+  // Longer display for longer messages
+  const duration = msg.length > 60 ? 5000 : 3500;
+  setTimeout(() => t.style.display = 'none', duration);
 }
 
 // ===================== INIT =====================
