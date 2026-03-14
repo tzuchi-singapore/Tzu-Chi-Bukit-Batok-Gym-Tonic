@@ -188,7 +188,7 @@ td { padding: 5px 3px; text-align: center; border: 1px solid #e0e0e0; vertical-a
   <div class="card">
     <h3 id="lbl-my-bookings">My Bookings</h3>
     <p id="lbl-login-first" style="font-size:13px;color:#666;margin-bottom:10px">Please login in the Book tab first.</p>
-    <div id="my-month-sel" style="display:none;gap:8px;margin-bottom:10px">
+    <div id="my-month-sel" style="display:none;gap:8px;margin-bottom:10px;flex-wrap:nowrap">
       <div id="mybtn-this" class="mbtn active" onclick="selectMyMonth('this')">This Month</div>
       <div id="mybtn-next" class="mbtn" onclick="selectMyMonth('next')">Next Month</div>
     </div>
@@ -392,369 +392,914 @@ td { padding: 5px 3px; text-align: center; border: 1px solid #e0e0e0; vertical-a
 <div id="export-area" style="position:fixed;left:-9999px;top:0;background:white;padding:20px;width:960px;"></div>
 
 <script>
+// ===================== CONFIG =====================
 const SUPABASE_URL = 'https://uwhfqjgjcknblefakyed.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3aGZxamdqY2tuYmxlZmFreWVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNTQxMTUsImV4cCI6MjA4ODYzMDExNX0.XyEWi2f8h-h0G6PV8LRr4qMkUFfZTDX061Y8DChy9go';
 const ADMIN_PASSWORD = 'tzuchi.123';
-const TIMES_WEEKDAY = ['8:30am','9:20am','10:10am','11:00am','1:00pm','1:50pm','2:40pm','3:30pm','4:20pm'];
+const TIMES_WEEKDAY  = ['8:30am','9:20am','10:10am','11:00am','1:00pm','1:50pm','2:40pm','3:30pm','4:20pm'];
 const TIMES_SATURDAY = ['8:30am','9:20am','10:10am','11:00am'];
-const DAYS_FULL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DAYS_FULL  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MAX_PER_SLOT = 6;
 
-let lang='en', currentMember=null, bookMonth='this', viewMonth='this', myMonth='this', adminMonth='this', bulkMonth='this', adminLoggedIn=false;
-let allMembers=[], allBookings=[], allBlocks=[], allAnnouncements=[];
+// ===================== STATE =====================
+let lang = 'en';
+let currentMember = null;
+let bookMonth  = 'this';
+let viewMonth  = 'this';
+let myMonth    = 'this';
+let adminMonth = 'this';
+let bulkMonth  = 'this';
+let adminLoggedIn = false;
+let allMembers = [], allBookings = [], allBlocks = [], allAnnouncements = [];
 
+// ===================== TRANSLATIONS =====================
 const T = {
-  en: { 'brand-title':'Tzu Chi SEEN(Bukit Batok)','brand-sub':'Gym Tonic Booking','lbl-select-member':'Select Your Name','lbl-name':'Name','lbl-pass':'Password','btn-login':'Login / Unlock','lbl-member-info':'Member Info','lbl-balance-label':'Sessions Balance','lbl-expiry-label':'Expiry Date','lbl-mia-label':'MIA Count','lbl-type-label':'Member Type','btn-logout':'Logout','lbl-book-slot':'Book a Slot','lbl-my-bookings':'My Bookings','lbl-login-first':'Please login in the Book tab first.','lbl-timetable':'Monthly Timetable','tab-book':'📅 Book','tab-my':'👤 My Bookings','tab-timetable':'🗓 Timetable' },
-  zh: { 'brand-title':'慈济SEEN(武吉巴督)','brand-sub':'健体操预约系统','lbl-select-member':'选择您的姓名','lbl-name':'姓名','lbl-pass':'密码','btn-login':'登录 / 解锁','lbl-member-info':'会员信息','lbl-balance-label':'剩余课次','lbl-expiry-label':'有效期至','lbl-mia-label':'缺席次数','lbl-type-label':'会员类型','btn-logout':'退出','lbl-book-slot':'预约课程','lbl-my-bookings':'我的预约','lbl-login-first':'请先在预约页面登录。','lbl-timetable':'每月课程表','tab-book':'📅 预约','tab-my':'👤 我的预约','tab-timetable':'🗓 课程表' }
+  en: {
+    'brand-title':'Tzu Chi SEEN(Bukit Batok)','brand-sub':'Gym Tonic Booking',
+    'lbl-select-member':'Select Your Name','lbl-name':'Name','lbl-pass':'Password',
+    'btn-login':'Login / Unlock','lbl-member-info':'Member Info',
+    'lbl-balance-label':'Sessions Balance','lbl-expiry-label':'Expiry Date',
+    'lbl-mia-label':'MIA Count','lbl-type-label':'Member Type','btn-logout':'Logout',
+    'lbl-book-slot':'Book a Slot','lbl-my-bookings':'My Bookings',
+    'lbl-login-first':'Please login in the Book tab first.',
+    'lbl-timetable':'Monthly Timetable',
+    'tab-book':'📅 Book','tab-my':'👤 My Bookings','tab-timetable':'🗓 Timetable'
+  },
+  zh: {
+    'brand-title':'慈济SEEN(武吉巴督)','brand-sub':'健体操预约系统',
+    'lbl-select-member':'选择您的姓名','lbl-name':'姓名','lbl-pass':'密码',
+    'btn-login':'登录 / 解锁','lbl-member-info':'会员信息',
+    'lbl-balance-label':'剩余课次','lbl-expiry-label':'有效期至',
+    'lbl-mia-label':'缺席次数','lbl-type-label':'会员类型','btn-logout':'退出',
+    'lbl-book-slot':'预约课程','lbl-my-bookings':'我的预约',
+    'lbl-login-first':'请先在预约页面登录。',
+    'lbl-timetable':'每月课程表',
+    'tab-book':'📅 预约','tab-my':'👤 我的预约','tab-timetable':'🗓 课程表'
+  }
 };
-
-function toggleLang() { lang = lang==='en'?'zh':'en'; document.getElementById('lang-btn').textContent = lang==='en'?'中文':'English'; applyTranslations(); }
-function applyTranslations() { const t=T[lang]; for(const[id,text]of Object.entries(t)){const el=document.getElementById(id);if(el)el.textContent=text;} }
-
-async function sbFetch(table,options={}) {
-  const{method='GET',filter='',body=null,returning=false}=options;
-  const url=`${SUPABASE_URL}/rest/v1/${table}${filter}`;
-  const headers={'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':returning?'return=representation':'return=minimal'};
-  const opts={method,headers};if(body)opts.body=JSON.stringify(body);
-  const res=await fetch(url,opts);if(!res.ok)throw new Error(await res.text());
-  if(method==='GET'||returning)return res.json();return null;
+function toggleLang() {
+  lang = lang === 'en' ? 'zh' : 'en';
+  document.getElementById('lang-btn').textContent = lang === 'en' ? '中文' : 'English';
+  applyTranslations();
+}
+function applyTranslations() {
+  const t = T[lang];
+  for (const [id, text] of Object.entries(t)) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
 }
 
+// ===================== SUPABASE =====================
+async function sbFetch(table, options = {}) {
+  const { method = 'GET', filter = '', body = null, returning = false } = options;
+  const url = `${SUPABASE_URL}/rest/v1/${table}${filter}`;
+  const headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
+    'Prefer': returning ? 'return=representation' : 'return=minimal'
+  };
+  const opts = { method, headers };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`${res.status}: ${errText}`);
+  }
+  if (method === 'GET' || returning) return res.json();
+  return null;
+}
+
+// ===================== DATA LOAD =====================
 async function loadAll() {
   try {
-    [allMembers,allBookings,allBlocks,allAnnouncements]=await Promise.all([
-      sbFetch('members',{filter:'?order=name.asc'}),
-      sbFetch('bookings',{filter:'?order=slot_date.asc,slot_time.asc'}),
-      sbFetch('blocked_slots',{filter:'?order=block_date.asc'}),
-      sbFetch('announcements',{filter:'?order=created_at.desc'}),
+    [allMembers, allBookings, allBlocks, allAnnouncements] = await Promise.all([
+      sbFetch('members',       { filter: '?order=name.asc' }),
+      sbFetch('bookings',      { filter: '?order=slot_date.asc,slot_time.asc' }),
+      sbFetch('blocked_slots', { filter: '?order=block_date.asc' }),
+      sbFetch('announcements', { filter: '?order=created_at.desc' }),
     ]);
-    populateMemberDropdowns(); renderAnnouncements(); renderTimetable(); renderBookGrid();
-    if(adminLoggedIn)renderAdminSections();
-  } catch(e){showToast('Error loading data. Check Supabase config.','error');console.error(e);}
+    // CRITICAL: always re-sync currentMember from fresh DB data
+    if (currentMember) {
+      const fresh = allMembers.find(m => String(m.id) === String(currentMember.id));
+      if (fresh) currentMember = fresh;
+    }
+    populateMemberDropdowns();
+    renderAnnouncements();
+    renderTimetable();
+    renderBookGrid();
+    if (currentMember) { updateMemberInfo(); renderMyBookings(); }
+    if (adminLoggedIn) renderAdminSections();
+  } catch (e) {
+    showToast('Error loading data: ' + e.message, 'error');
+    console.error(e);
+  }
 }
 
-// MONTH HELPERS
+// ===================== DATE HELPERS =====================
+// IMPORTANT: Always parse YYYY-MM-DD in LOCAL time to avoid UTC-offset day shift
+function parseLocalDate(ds) {
+  const [y, m, d] = ds.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+function fmtDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
 function getMonthInfo(which) {
-  const now=new Date(); let y=now.getFullYear(),m=now.getMonth();
-  if(which==='next'){m++;if(m>11){m=0;y++;}}
-  return{year:y,month:m};
+  const now = new Date();
+  let y = now.getFullYear(), m = now.getMonth();
+  if (which === 'next') { m++; if (m > 11) { m = 0; y++; } }
+  return { year: y, month: m };
 }
 function getMonthDates(which) {
-  const{year,month}=getMonthInfo(which);
-  const dates=[];const days=new Date(year,month+1,0).getDate();
-  for(let d=1;d<=days;d++){const dt=new Date(year,month,d);if(dt.getDay()!==0)dates.push(dt);}
+  const { year, month } = getMonthInfo(which);
+  const days = new Date(year, month + 1, 0).getDate();
+  const dates = [];
+  for (let d = 1; d <= days; d++) {
+    const dt = new Date(year, month, d);
+    if (dt.getDay() !== 0) dates.push(dt); // exclude Sundays
+  }
   return dates;
 }
-function fmtDate(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return`${y}-${m}-${day}`;}
-function getTimesForDay(d){return d.getDay()===6?TIMES_SATURDAY:TIMES_WEEKDAY;}
-function timeToMinutes(t){const x=t.match(/^(\d+)(?::(\d+))?(am|pm)$/i);if(!x)return 0;let h=parseInt(x[1]);const m=parseInt(x[2]||'0'),ap=x[3].toLowerCase();if(ap==='pm'&&h!==12)h+=12;if(ap==='am'&&h===12)h=0;return h*60+m;}
-function to24(t){const x=t.match(/^(\d+)(?::(\d+))?(am|pm)$/i);if(!x)return'00:00:00';let h=parseInt(x[1]);const m=parseInt(x[2]||'0'),ap=x[3].toLowerCase();if(ap==='pm'&&h!==12)h+=12;if(ap==='am'&&h===12)h=0;return`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:00`;}
-function monthLabel(which){const{year,month}=getMonthInfo(which);return`${MONTH_NAMES[month]} ${year}`;}
-
-// LOGIN
-async function loginMember() {
-  const sel=document.getElementById('member-select').value, pass=document.getElementById('member-pass').value;
-  if(!sel){showToast('Please select your name','error');return;}
-  const member=allMembers.find(m=>m.id==sel);
-  if(!member){showToast('Member not found','error');return;}
-  if(member.password!==pass){showToast('Wrong password','error');return;}
-  currentMember=member;
-  document.getElementById('member-info-section').style.display='block';
-  document.getElementById('my-month-sel').style.display='flex';
-  updateMemberInfo();renderBookGrid();renderMyBookings();
-  showToast(`Welcome, ${member.name}! 🌟`,'success');
+function getTimesForDay(d) { return d.getDay() === 6 ? TIMES_SATURDAY : TIMES_WEEKDAY; }
+function timeToMinutes(t) {
+  const x = t.match(/^(\d+)(?::(\d+))?(am|pm)$/i);
+  if (!x) return 0;
+  let h = parseInt(x[1]);
+  const m = parseInt(x[2] || '0'), ap = x[3].toLowerCase();
+  if (ap === 'pm' && h !== 12) h += 12;
+  if (ap === 'am' && h === 12) h = 0;
+  return h * 60 + m;
 }
-function logoutMember(){currentMember=null;document.getElementById('member-info-section').style.display='none';document.getElementById('member-pass').value='';}
+function to24(t) {
+  const x = t.match(/^(\d+)(?::(\d+))?(am|pm)$/i);
+  if (!x) return '00:00:00';
+  let h = parseInt(x[1]);
+  const m = parseInt(x[2] || '0'), ap = x[3].toLowerCase();
+  if (ap === 'pm' && h !== 12) h += 12;
+  if (ap === 'am' && h === 12) h = 0;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:00`;
+}
+function monthLabel(which) {
+  const { year, month } = getMonthInfo(which);
+  return `${MONTH_NAMES[month]} ${year}`;
+}
+// Get Mon–Sun dates for the week containing a given YYYY-MM-DD string
+function getWeekDatesFor(ds) {
+  const d = parseLocalDate(ds);
+  const dow = d.getDay(); // 0=Sun
+  // Monday-based week
+  const monday = new Date(d);
+  monday.setDate(d.getDate() - (dow === 0 ? 6 : dow - 1));
+  const week = [];
+  for (let i = 0; i < 7; i++) {
+    const x = new Date(monday);
+    x.setDate(monday.getDate() + i);
+    week.push(fmtDate(x));
+  }
+  return week;
+}
+
+// ===================== LOGIN =====================
+async function loginMember() {
+  const sel  = document.getElementById('member-select').value;
+  const pass = document.getElementById('member-pass').value;
+  if (!sel) { showToast('Please select your name', 'error'); return; }
+  const member = allMembers.find(m => String(m.id) === sel);
+  if (!member) { showToast('Member not found', 'error'); return; }
+  if (member.password !== pass) { showToast('Wrong password', 'error'); return; }
+  currentMember = member;
+  document.getElementById('member-info-section').style.display = 'block';
+  document.getElementById('lbl-login-first').style.display = 'none';
+  document.getElementById('my-month-sel').style.display = 'flex';
+  updateMemberInfo();
+  renderBookGrid();
+  renderMyBookings();
+  showToast(`Welcome, ${member.name}! 🌟`, 'success');
+}
+function logoutMember() {
+  currentMember = null;
+  document.getElementById('member-info-section').style.display = 'none';
+  document.getElementById('member-pass').value = '';
+  document.getElementById('lbl-login-first').style.display = 'block';
+  document.getElementById('my-month-sel').style.display = 'none';
+  document.getElementById('my-bookings-list').innerHTML = '';
+  document.getElementById('book-grid').innerHTML = '';
+}
 function updateMemberInfo() {
-  if(!currentMember)return;
-  const mia=allBookings.filter(b=>b.member_id==currentMember.id&&b.is_mia).length;
-  document.getElementById('info-balance').textContent=currentMember.balance_sessions??'-';
-  document.getElementById('info-expiry').textContent=currentMember.expiry_date??'-';
-  document.getElementById('info-mia').textContent=mia+' / 3';
-  document.getElementById('info-type').textContent=currentMember.member_type==='maintenance'?(lang==='zh'?'维护会员':'Maintenance'):(lang==='zh'?'普通会员':'Normal');
+  if (!currentMember) return;
+  const mia = allBookings.filter(b => String(b.member_id) === String(currentMember.id) && b.is_mia).length;
+  document.getElementById('info-balance').textContent = currentMember.balance_sessions ?? '-';
+  document.getElementById('info-expiry').textContent  = currentMember.expiry_date ?? '-';
+  document.getElementById('info-mia').textContent     = mia + ' / 3';
+  document.getElementById('info-type').textContent    =
+    currentMember.member_type === 'maintenance'
+      ? (lang === 'zh' ? '维护会员' : 'Maintenance')
+      : (lang === 'zh' ? '普通会员' : 'Normal');
 }
 function populateMemberDropdowns() {
-  const sel=document.getElementById('member-select'),cur=sel.value;
-  sel.innerHTML='<option value="">-- Select --</option>';
-  allMembers.forEach(m=>{sel.innerHTML+=`<option value="${m.id}">${m.name}</option>`;});sel.value=cur;
-  ['admin-filter-member','admin-add-member','mia-member-select','bulk-member'].forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;const v=el.value;
-    el.innerHTML=id==='admin-filter-member'?'<option value="">All Members</option>':'';
-    allMembers.forEach(m=>{el.innerHTML+=`<option value="${m.id}">${m.name}</option>`;});el.value=v;
+  const sel = document.getElementById('member-select'), cur = sel.value;
+  sel.innerHTML = '<option value="">-- Select --</option>';
+  allMembers.forEach(m => { sel.innerHTML += `<option value="${m.id}">${m.name}</option>`; });
+  sel.value = cur;
+  ['admin-filter-member','admin-add-member','mia-member-select','bulk-member'].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    const v = el.value;
+    el.innerHTML = id === 'admin-filter-member' ? '<option value="">All Members</option>' : '';
+    allMembers.forEach(m => { el.innerHTML += `<option value="${m.id}">${m.name}</option>`; });
+    el.value = v;
   });
 }
 
-// BOOK GRID
+// ===================== BOOK GRID =====================
 function selectBookMonth(w) {
-  bookMonth=w;
-  document.getElementById('wbtn-this').className='mbtn'+(w==='this'?' active':'');
-  document.getElementById('wbtn-next').className='mbtn'+(w==='next'?' active':'');
+  bookMonth = w;
+  document.getElementById('wbtn-this').className = 'mbtn' + (w === 'this' ? ' active' : '');
+  document.getElementById('wbtn-next').className = 'mbtn' + (w === 'next' ? ' active' : '');
   renderBookGrid();
 }
 function renderBookGrid() {
-  const container=document.getElementById('book-grid'),lbl=document.getElementById('book-month-label');
-  if(!currentMember){container.innerHTML='';return;}
-  lbl.textContent=monthLabel(bookMonth);
-  const dates=getMonthDates(bookMonth),now=new Date(),todayStr=fmtDate(now);
-  let html='';
-  dates.forEach(date=>{
-    const ds=fmtDate(date),dow=date.getDay(),times=getTimesForDay(date);
-    const dayBlock=allBlocks.find(b=>b.block_date===ds&&!b.block_time);
-    const isToday=ds===todayStr,isSat=dow===6;
-    let hc='month-day-header';if(isToday)hc+=' today-hdr';else if(isSat)hc+=' sat-hdr';
-    html+=`<div class="month-day-block"><div class="${hc}">${DAYS_FULL[dow]}, ${ds}${isToday?' 🌟':''}</div>`;
-    if(dayBlock){html+=`<div class="slot-row"><span style="font-size:12px;color:#999">🚫 Blocked: ${dayBlock.reason}</span></div>`;}
-    else {
-      times.forEach(t=>{
-        const slotBlock=allBlocks.find(b=>b.block_date===ds&&b.block_time===t);
-        const slotBks=allBookings.filter(b=>b.slot_date===ds&&b.slot_time===t);
-        const count=slotBks.length,myBk=slotBks.find(b=>b.member_id==currentMember.id);
-        const slotDT=new Date(`${ds}T${to24(t)}`),isPast=now>=new Date(slotDT.getTime()-5*60000);
-        html+=`<div class="slot-row"><span class="slot-time">${t}</span><span class="slot-cnt">${count}/${MAX_PER_SLOT}</span>`;
-        if(slotBlock){html+=`<span style="font-size:11px;color:#999">🚫 ${slotBlock.reason}</span>`;}
-        else if(isPast){html+=`<span style="font-size:11px;color:#bbb">Closed</span>`;}
-        else if(myBk){
-          const cc=new Date(slotDT.getTime()-60*60000);
-          html+=now<cc?`<button onclick="cancelBooking('${myBk.id}')" style="font-size:12px;padding:5px 10px;background:#c0392b;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Cancel ✕</button>`:`<span style="font-size:11px;color:var(--jade-dark);font-weight:700">✅ Booked</span>`;
+  const container = document.getElementById('book-grid');
+  const lbl = document.getElementById('book-month-label');
+  if (!currentMember) { container.innerHTML = ''; return; }
+  lbl.textContent = monthLabel(bookMonth);
+
+  const dates = getMonthDates(bookMonth);
+  const now = new Date();
+  const todayStr = fmtDate(now);
+  let html = '';
+
+  dates.forEach(date => {
+    const ds  = fmtDate(date);
+    const dow = date.getDay();
+    const times = getTimesForDay(date);
+    const dayBlock = allBlocks.find(b => b.block_date === ds && !b.block_time);
+    const isToday  = ds === todayStr;
+    const isSat    = dow === 6;
+
+    let hc = 'month-day-header';
+    if (isToday) hc += ' today-hdr';
+    else if (isSat) hc += ' sat-hdr';
+
+    html += `<div class="month-day-block">
+      <div class="${hc}">${DAYS_FULL[dow]}, ${ds}${isToday ? ' 🌟' : ''}</div>`;
+
+    if (dayBlock) {
+      html += `<div class="slot-row"><span style="font-size:12px;color:#999">🚫 Blocked: ${dayBlock.reason}</span></div>`;
+    } else {
+      // Pre-compute this member's bookings for this day and week
+      const myDayBks  = allBookings.filter(b => String(b.member_id) === String(currentMember.id) && b.slot_date === ds && !b.is_mia);
+      const weekDates = getWeekDatesFor(ds);
+      const myWeekBks = allBookings.filter(b => String(b.member_id) === String(currentMember.id) && weekDates.includes(b.slot_date) && !b.is_mia);
+      const maxPerWeek = currentMember.member_type === 'maintenance' ? 1 : 2;
+      const weekFull   = myWeekBks.length >= maxPerWeek;
+      const dayFull    = myDayBks.length >= 1; // 1 per day max
+
+      times.forEach(t => {
+        const slotBlock = allBlocks.find(b => b.block_date === ds && b.block_time === t);
+        const slotBks   = allBookings.filter(b => b.slot_date === ds && b.slot_time === t);
+        const count     = slotBks.length;
+        const myBk      = slotBks.find(b => String(b.member_id) === String(currentMember.id));
+
+        // Check if slot is past (close 5 min before)
+        const slotDT  = new Date(`${ds}T${to24(t)}`);
+        const isPast  = now >= new Date(slotDT.getTime() - 5 * 60000);
+
+        html += `<div class="slot-row">
+          <span class="slot-time">${t}</span>
+          <span class="slot-cnt">${count}/${MAX_PER_SLOT}</span>`;
+
+        if (slotBlock) {
+          html += `<span style="font-size:11px;color:#999">🚫 ${slotBlock.reason}</span>`;
+        } else if (isPast) {
+          html += `<span style="font-size:11px;color:#bbb">Closed</span>`;
+        } else if (myBk) {
+          // Member already booked this slot – show cancel if ≥ 1hr before
+          const canCancel = now < new Date(slotDT.getTime() - 60 * 60000);
+          html += canCancel
+            ? `<button onclick="cancelBooking('${myBk.id}')" style="font-size:12px;padding:5px 10px;background:#c0392b;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Cancel ✕</button>`
+            : `<span style="font-size:11px;color:var(--jade-dark);font-weight:700">✅ Booked</span>`;
+        } else if (count >= MAX_PER_SLOT) {
+          html += `<span style="font-size:11px;color:var(--red);font-weight:700">Full</span>`;
+        } else if (dayFull) {
+          html += `<span style="font-size:11px;color:#f39c12;font-weight:700">1/day max</span>`;
+        } else if (weekFull) {
+          html += `<span style="font-size:11px;color:#f39c12;font-weight:700">${maxPerWeek}/wk max</span>`;
+        } else {
+          html += `<button onclick="bookSlot('${ds}','${t}')" style="font-size:12px;padding:5px 10px;background:#1a5c45;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Book ➕</button>`;
         }
-        else if(count>=MAX_PER_SLOT){html+=`<span style="font-size:11px;color:var(--red);font-weight:700">Full</span>`;}
-        else{html+=`<button onclick="bookSlot('${ds}','${t}')" style="font-size:12px;padding:5px 10px;background:#1a5c45;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Book ➕</button>`;}
-        html+='</div>';
+        html += '</div>';
       });
     }
-    html+='</div>';
+    html += '</div>';
   });
-  container.innerHTML=html||'<p style="color:#888;font-size:13px">No dates available.</p>';
+  container.innerHTML = html || '<p style="color:#888;font-size:13px">No dates available.</p>';
 }
 
-// BOOKING
-async function bookSlot(date,time) {
-  if(!currentMember){showToast('Please login first','error');return;}
-  const d=new Date(date),dow=d.getDay();
-  const ws=new Date(d);ws.setDate(d.getDate()-(dow===0?6:dow-1));
-  const wDates=[];for(let i=0;i<7;i++){const x=new Date(ws);x.setDate(ws.getDate()+i);wDates.push(fmtDate(x));}
-  const myWeek=allBookings.filter(b=>b.member_id==currentMember.id&&wDates.includes(b.slot_date)&&!b.is_mia);
-  const maxW=currentMember.member_type==='maintenance'?1:2;
-  if(myWeek.length>=maxW){showToast(`Max ${maxW} booking(s)/week for your membership.`,'error');return;}
-  if(myWeek.some(b=>b.slot_date===date)){showToast('Only 1 booking per day allowed.','error');return;}
-  if(currentMember.expiry_date&&new Date(currentMember.expiry_date)<new Date()){showToast('Your membership has expired.','error');return;}
-  if(currentMember.balance_sessions!==null&&currentMember.balance_sessions<=0){showToast('No sessions remaining.','error');return;}
-  try{
-    await sbFetch('bookings',{method:'POST',body:{member_id:currentMember.id,slot_date:date,slot_time:time,is_mia:false}});
-    if(currentMember.balance_sessions!==null){await sbFetch('members',{method:'PATCH',filter:`?id=eq.${currentMember.id}`,body:{balance_sessions:currentMember.balance_sessions-1}});currentMember.balance_sessions--;}
-    showToast('Booking confirmed! 🎉','success');await loadAll();updateMemberInfo();
-  }catch(e){showToast('Booking failed. Try again.','error');}
+// ===================== BOOK / CANCEL =====================
+async function bookSlot(date, time) {
+  if (!currentMember) { showToast('Please login first', 'error'); return; }
+
+  // --- Rule 1: 1 booking per day ---
+  const myDayBks = allBookings.filter(b =>
+    String(b.member_id) === String(currentMember.id) && b.slot_date === date && !b.is_mia
+  );
+  if (myDayBks.length >= 1) {
+    showToast('Only 1 booking per day allowed.', 'error'); return;
+  }
+
+  // --- Rule 2: weekly limit (Normal=2, Maintenance=1) ---
+  const weekDates  = getWeekDatesFor(date);
+  const myWeekBks  = allBookings.filter(b =>
+    String(b.member_id) === String(currentMember.id) && weekDates.includes(b.slot_date) && !b.is_mia
+  );
+  const maxPerWeek = currentMember.member_type === 'maintenance' ? 1 : 2;
+  if (myWeekBks.length >= maxPerWeek) {
+    showToast(`Max ${maxPerWeek} booking(s)/week for your membership type.`, 'error'); return;
+  }
+
+  // --- Rule 3: expiry ---
+  if (currentMember.expiry_date && parseLocalDate(currentMember.expiry_date) < new Date()) {
+    showToast('Your membership has expired.', 'error'); return;
+  }
+
+  // --- Rule 4: balance ---
+  if (currentMember.balance_sessions !== null && currentMember.balance_sessions <= 0) {
+    showToast('No sessions remaining.', 'error'); return;
+  }
+
+  try {
+    await sbFetch('bookings', {
+      method: 'POST',
+      body: { member_id: currentMember.id, slot_date: date, slot_time: time, is_mia: false }
+    });
+    // Deduct balance
+    if (currentMember.balance_sessions !== null) {
+      const newBal = currentMember.balance_sessions - 1;
+      await sbFetch('members', {
+        method: 'PATCH',
+        filter: `?id=eq.${currentMember.id}`,
+        body: { balance_sessions: newBal }
+      });
+    }
+    showToast('Booking confirmed! 🎉', 'success');
+    await loadAll(); // re-syncs currentMember, timetable, book grid
+  } catch (e) {
+    console.error(e);
+    showToast('Booking failed: ' + e.message, 'error');
+  }
 }
+
 async function cancelBooking(bookingId) {
-  if(!confirm('Cancel this booking?'))return;
-  try{
-    await sbFetch('bookings',{method:'DELETE',filter:`?id=eq.${bookingId}`});
-    if(currentMember&&currentMember.balance_sessions!==null){await sbFetch('members',{method:'PATCH',filter:`?id=eq.${currentMember.id}`,body:{balance_sessions:currentMember.balance_sessions+1}});currentMember.balance_sessions++;}
-    showToast('Booking cancelled.','success');await loadAll();updateMemberInfo();
-  }catch(e){showToast('Cancel failed.','error');}
+  if (!confirm('Cancel this booking?')) return;
+  try {
+    const bk = allBookings.find(b => String(b.id) === String(bookingId));
+    await sbFetch('bookings', { method: 'DELETE', filter: `?id=eq.${bookingId}` });
+    // Restore balance only for real (non-MIA) bookings
+    if (bk && !bk.is_mia) {
+      const owner = allMembers.find(m => String(m.id) === String(bk.member_id));
+      if (owner && owner.balance_sessions !== null) {
+        await sbFetch('members', {
+          method: 'PATCH',
+          filter: `?id=eq.${owner.id}`,
+          body: { balance_sessions: owner.balance_sessions + 1 }
+        });
+      }
+    }
+    showToast('Booking cancelled.', 'success');
+    await loadAll();
+  } catch (e) {
+    console.error(e);
+    showToast('Cancel failed: ' + e.message, 'error');
+  }
 }
 
-// MY BOOKINGS
-function selectMyMonth(w){myMonth=w;document.getElementById('mybtn-this').className='mbtn'+(w==='this'?' active':'');document.getElementById('mybtn-next').className='mbtn'+(w==='next'?' active':'');renderMyBookings();}
+// ===================== MY BOOKINGS =====================
+function selectMyMonth(w) {
+  myMonth = w;
+  document.getElementById('mybtn-this').className = 'mbtn' + (w === 'this' ? ' active' : '');
+  document.getElementById('mybtn-next').className = 'mbtn' + (w === 'next' ? ' active' : '');
+  renderMyBookings();
+}
 function renderMyBookings() {
-  const list=document.getElementById('my-bookings-list'),lbl=document.getElementById('lbl-login-first');
-  if(!currentMember){list.innerHTML='';lbl.style.display='block';return;}
-  lbl.style.display='none';
-  const{year,month}=getMonthInfo(myMonth);
-  const mine=allBookings.filter(b=>{if(b.member_id!=currentMember.id)return false;const d=new Date(b.slot_date);return d.getFullYear()===year&&d.getMonth()===month;}).sort((a,b)=>a.slot_date>b.slot_date?1:-1);
-  if(!mine.length){list.innerHTML=`<p style="font-size:13px;color:#888">No bookings in ${monthLabel(myMonth)}.</p>`;return;}
-  const now=new Date();
-  list.innerHTML=mine.map(b=>{
-    const slotDT=new Date(`${b.slot_date}T${to24(b.slot_time)}`),canCancel=now<new Date(slotDT.getTime()-60*60000),isPast=now>slotDT;
-    return`<div class="booking-item"><div class="booking-info"><div class="booking-time">${b.slot_time}</div><div class="booking-day">${b.slot_date} ${b.is_mia?'🔴 MIA':(isPast?'✅ Done':'📌 Upcoming')}</div></div>${canCancel&&!isPast&&!b.is_mia?`<button onclick="cancelBooking('${b.id}')" style="padding:7px 14px;background:#c0392b;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>`:''}</div>`;
+  const list = document.getElementById('my-bookings-list');
+  const lbl  = document.getElementById('lbl-login-first');
+  if (!currentMember) { list.innerHTML = ''; lbl.style.display = 'block'; return; }
+  lbl.style.display = 'none';
+
+  const { year, month } = getMonthInfo(myMonth);
+  const mine = allBookings.filter(b => {
+    if (String(b.member_id) !== String(currentMember.id)) return false;
+    if (b.is_mia && b.slot_time === '00:00') return false; // skip MIA placeholders
+    const d = parseLocalDate(b.slot_date);
+    return d.getFullYear() === year && d.getMonth() === month;
+  }).sort((a, b) => a.slot_date > b.slot_date ? 1 : a.slot_date < b.slot_date ? -1 : 0);
+
+  if (!mine.length) {
+    list.innerHTML = `<p style="font-size:13px;color:#888">No bookings in ${monthLabel(myMonth)}.</p>`;
+    return;
+  }
+  const now = new Date();
+  list.innerHTML = mine.map(b => {
+    const slotDT    = new Date(`${b.slot_date}T${to24(b.slot_time)}`);
+    const isPast    = now > slotDT;
+    const canCancel = !b.is_mia && !isPast && now < new Date(slotDT.getTime() - 60 * 60000);
+    const status    = b.is_mia ? '🔴 MIA' : (isPast ? '✅ Done' : '📌 Upcoming');
+    return `<div class="booking-item">
+      <div class="booking-info">
+        <div class="booking-time">${b.slot_time}</div>
+        <div class="booking-day">${b.slot_date} ${status}</div>
+      </div>
+      ${canCancel ? `<button onclick="cancelBooking('${b.id}')" style="padding:7px 14px;background:#c0392b;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">Cancel</button>` : ''}
+    </div>`;
   }).join('');
 }
 
-// TIMETABLE
-function selectViewMonth(w){viewMonth=w;document.getElementById('twbtn-this').className='mbtn'+(w==='this'?' active':'');document.getElementById('twbtn-next').className='mbtn'+(w==='next'?' active':'');renderTimetable();}
+// ===================== TIMETABLE =====================
+function selectViewMonth(w) {
+  viewMonth = w;
+  document.getElementById('twbtn-this').className = 'mbtn' + (w === 'this' ? ' active' : '');
+  document.getElementById('twbtn-next').className = 'mbtn' + (w === 'next' ? ' active' : '');
+  renderTimetable();
+}
 function renderTimetable(target) {
-  const container=target||document.getElementById('timetable-container');
-  const lbl=document.getElementById('timetable-month-label');
-  if(lbl)lbl.textContent=monthLabel(viewMonth);
-  const dates=getMonthDates(viewMonth);
-  const allTimes=[...new Set([...TIMES_WEEKDAY,...TIMES_SATURDAY])].sort((a,b)=>timeToMinutes(a)-timeToMinutes(b));
-  // Group into weeks
-  const weeks=[];let cw=[];
-  dates.forEach((d,i)=>{cw.push(d);const nd=dates[i+1];if(!nd||nd.getDay()===1){weeks.push([...cw]);cw=[];}});
-  let html='';
-  weeks.forEach(wd=>{
-    html+='<table><thead><tr><th>Time</th>';
-    wd.forEach(d=>{html+=`<th>${DAYS_SHORT[d.getDay()]}<br><small style="font-weight:400">${d.getDate()}/${d.getMonth()+1}</small></th>`;});
-    html+='</tr></thead><tbody>';
-    allTimes.forEach(t=>{
-      html+=`<tr><td class="date-label">${t}</td>`;
-      wd.forEach(d=>{
-        const ds=fmtDate(d),times=getTimesForDay(d);
-        if(!times.includes(t)){html+='<td style="background:#fafafa;color:#ccc">–</td>';return;}
-        const db=allBlocks.find(b=>b.block_date===ds&&!b.block_time),sb=allBlocks.find(b=>b.block_date===ds&&b.block_time===t);
-        if(db||sb){html+=`<td class="slot-blocked">🚫<br><small>${(db||sb).reason||''}</small></td>`;return;}
-        const bks=allBookings.filter(b=>b.slot_date===ds&&b.slot_time===t),cnt=bks.length;
-        const cls=cnt>=MAX_PER_SLOT?'slot-full':'slot-available';
-        const names=bks.map(b=>{const m=allMembers.find(x=>x.id==b.member_id);return m?`<span class="member-chip">${m.name.split(' ')[0]}</span>`:''}).join('');
-        html+=`<td class="${cls}"><span class="slot-count">${cnt}/${MAX_PER_SLOT}</span><br>${names}</td>`;
-      });
-      html+='</tr>';
+  const container = target || document.getElementById('timetable-container');
+  const lbl = document.getElementById('timetable-month-label');
+  if (lbl && !target) lbl.textContent = monthLabel(viewMonth);
+
+  const dates = getMonthDates(viewMonth);
+  const allTimes = [...new Set([...TIMES_WEEKDAY, ...TIMES_SATURDAY])]
+    .sort((a, b) => timeToMinutes(a) - timeToMinutes(b));
+
+  // Split dates into Mon–Sat calendar weeks
+  const weeks = []; let cw = [];
+  dates.forEach((d, i) => {
+    cw.push(d);
+    const nd = dates[i + 1];
+    if (!nd || nd.getDay() === 1) { weeks.push([...cw]); cw = []; }
+  });
+
+  let html = '';
+  weeks.forEach(wd => {
+    html += '<table><thead><tr><th>Time</th>';
+    wd.forEach(d => {
+      html += `<th>${DAYS_SHORT[d.getDay()]}<br><small style="font-weight:400">${d.getDate()}/${d.getMonth()+1}</small></th>`;
     });
-    html+='</tbody></table>';
+    html += '</tr></thead><tbody>';
+
+    allTimes.forEach(t => {
+      html += `<tr><td class="date-label">${t}</td>`;
+      wd.forEach(d => {
+        const ds    = fmtDate(d);
+        const times = getTimesForDay(d);
+        if (!times.includes(t)) { html += '<td style="background:#fafafa;color:#ccc">–</td>'; return; }
+        const db = allBlocks.find(b => b.block_date === ds && !b.block_time);
+        const sb = allBlocks.find(b => b.block_date === ds && b.block_time === t);
+        if (db || sb) {
+          html += `<td class="slot-blocked">🚫<br><small>${(db||sb).reason||''}</small></td>`;
+          return;
+        }
+        const bks   = allBookings.filter(b => b.slot_date === ds && b.slot_time === t);
+        const cnt   = bks.length;
+        const cls   = cnt >= MAX_PER_SLOT ? 'slot-full' : 'slot-available';
+        const names = bks.map(b => {
+          const m = allMembers.find(x => String(x.id) === String(b.member_id));
+          return m ? `<span class="member-chip">${m.name.split(' ')[0]}</span>` : '';
+        }).join('');
+        html += `<td class="${cls}"><span class="slot-count">${cnt}/${MAX_PER_SLOT}</span><br>${names}</td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
   });
-  container.innerHTML=html||'<p style="color:#888;font-size:13px">No dates this month.</p>';
+  container.innerHTML = html || '<p style="color:#888;font-size:13px">No dates this month.</p>';
 }
 
-// ANNOUNCEMENTS
+// ===================== ANNOUNCEMENTS =====================
 function renderAnnouncements() {
-  const banner=document.getElementById('announcement-banner');
-  if(allAnnouncements.length>0){banner.textContent='📢 '+allAnnouncements[0].message;banner.style.display='block';}else{banner.style.display='none';}
-  const list=document.getElementById('ann-list');if(!list)return;
-  list.innerHTML=allAnnouncements.map(a=>`<div class="booking-item"><div class="booking-info"><div class="booking-time">${a.message}</div><div class="booking-day">${(a.created_at||'').slice(0,10)}</div></div><button class="btn btn-danger btn-sm" onclick="removeAnnouncement('${a.id}')">Remove</button></div>`).join('')||'<p style="font-size:13px;color:#888">No announcements.</p>';
+  const banner = document.getElementById('announcement-banner');
+  if (allAnnouncements.length > 0) {
+    banner.textContent = '📢 ' + allAnnouncements[0].message;
+    banner.style.display = 'block';
+  } else { banner.style.display = 'none'; }
+  const list = document.getElementById('ann-list'); if (!list) return;
+  list.innerHTML = allAnnouncements.map(a =>
+    `<div class="booking-item">
+      <div class="booking-info">
+        <div class="booking-time">${a.message}</div>
+        <div class="booking-day">${(a.created_at || '').slice(0,10)}</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="removeAnnouncement('${a.id}')">Remove</button>
+    </div>`
+  ).join('') || '<p style="font-size:13px;color:#888">No announcements.</p>';
 }
-async function postAnnouncement(){const msg=document.getElementById('ann-text').value.trim();if(!msg)return;await sbFetch('announcements',{method:'POST',body:{message:msg}});document.getElementById('ann-text').value='';await loadAll();}
-async function removeAnnouncement(id){await sbFetch('announcements',{method:'DELETE',filter:`?id=eq.${id}`});await loadAll();}
-
-// ADMIN
-function openAdminLogin(){document.getElementById('admin-login-modal').classList.add('open');}
-function submitAdminLogin(){
-  const pass=document.getElementById('admin-pass-input').value;
-  if(pass===ADMIN_PASSWORD){adminLoggedIn=true;document.getElementById('tab-admin').style.display='block';closeModal('admin-login-modal');showTab('admin');renderAdminSections();showToast('Admin access granted 🔑','success');}
-  else showToast('Wrong admin password','error');
+async function postAnnouncement() {
+  const msg = document.getElementById('ann-text').value.trim();
+  if (!msg) return;
+  await sbFetch('announcements', { method: 'POST', body: { message: msg } });
+  document.getElementById('ann-text').value = '';
+  await loadAll();
 }
-function renderAdminSections(){renderAnnouncements();loadAdminBookings();renderAdminMembers();renderBlocks();renderMiaTracker();populateAdminTimeDropdowns();updateBulkPreview();}
-function showAdminTab(name,el){
-  document.querySelectorAll('.admin-subsection').forEach(s=>s.style.display='none');
-  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(`admin-${name}`).style.display='block';if(el)el.classList.add('active');
-  if(name==='mia')renderMiaTracker();if(name==='members')renderAdminMembers();if(name==='blocks')renderBlocks();if(name==='bookings'){loadAdminBookings();updateBulkPreview();}
-}
-function loadAdminBookings(){
-  const fm=document.getElementById('admin-filter-member')?.value,{year,month}=getMonthInfo(adminMonth);
-  let bks=allBookings.filter(b=>{const d=new Date(b.slot_date);return d.getFullYear()===year&&d.getMonth()===month;});
-  if(fm)bks=bks.filter(b=>b.member_id==fm);
-  const list=document.getElementById('admin-bookings-list');if(!list)return;
-  list.innerHTML=bks.map(b=>{const m=allMembers.find(x=>x.id==b.member_id);return`<div class="booking-item"><div class="booking-info"><div class="booking-time">${m?.name||'?'} – ${b.slot_time}</div><div class="booking-day">${b.slot_date} ${b.is_mia?'🔴 MIA':''}</div></div><button class="btn btn-danger btn-sm" onclick="adminRemoveBooking('${b.id}')">Remove</button></div>`;}).join('')||`<p style="font-size:13px;color:#888">No bookings in ${monthLabel(adminMonth)}.</p>`;
-}
-async function adminRemoveBooking(id){if(!confirm('Remove this booking?'))return;await sbFetch('bookings',{method:'DELETE',filter:`?id=eq.${id}`});await loadAll();loadAdminBookings();}
-async function adminAddBooking(){
-  const mid=document.getElementById('admin-add-member').value,date=document.getElementById('admin-add-date').value,time=document.getElementById('admin-add-time').value;
-  if(!mid||!date||!time){showToast('Fill all fields','error');return;}
-  await sbFetch('bookings',{method:'POST',body:{member_id:mid,slot_date:date,slot_time:time,is_mia:false}});
-  showToast('Booking added','success');await loadAll();
-}
-function selectAdminMonth(w){adminMonth=w;document.getElementById('abwbtn-this').className='mbtn'+(w==='this'?' active':'');document.getElementById('abwbtn-next').className='mbtn'+(w==='next'?' active':'');loadAdminBookings();}
-function populateAdminTimeDropdowns(){
-  const all=[...new Set([...TIMES_WEEKDAY,...TIMES_SATURDAY])];
-  ['admin-add-time','block-time','bulk-time'].forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
-    const base=id==='block-time'?'<option value="">-- All Day --</option>':'<option value="">-- Select --</option>';
-    el.innerHTML=base+all.map(t=>`<option value="${t}">${t}</option>`).join('');
-  });
+async function removeAnnouncement(id) {
+  await sbFetch('announcements', { method: 'DELETE', filter: `?id=eq.${id}` });
+  await loadAll();
 }
 
-// BULK BOOKING
-function selectBulkMonth(w){bulkMonth=w;document.getElementById('bulk-month-this').className='mbtn'+(w==='this'?' active':'');document.getElementById('bulk-month-next').className='mbtn'+(w==='next'?' active':'');updateBulkPreview();}
-function getBulkCandidates(){
-  const dow=parseInt(document.getElementById('bulk-day')?.value||'2'),time=document.getElementById('bulk-time')?.value;
-  if(!time)return[];
-  return getMonthDates(bulkMonth).filter(d=>{if(d.getDay()!==dow)return false;return getTimesForDay(d).includes(time);});
-}
-function updateBulkPreview(){
-  const preview=document.getElementById('bulk-preview');if(!preview)return;
-  const mid=document.getElementById('bulk-member')?.value,time=document.getElementById('bulk-time')?.value;
-  if(!time){preview.textContent='Select a time slot to preview dates.';return;}
-  const candidates=getBulkCandidates();
-  if(!candidates.length){preview.textContent='No matching dates found in this month.';return;}
-  const now=new Date();const eligible=[],skipped=[];
-  candidates.forEach(d=>{
-    const ds=fmtDate(d),db=allBlocks.find(b=>b.block_date===ds&&!b.block_time),sb=allBlocks.find(b=>b.block_date===ds&&b.block_time===time);
-    const bks=allBookings.filter(b=>b.slot_date===ds&&b.slot_time===time);
-    const alreadyBooked=mid?bks.some(b=>b.member_id==mid):false,isFull=bks.length>=MAX_PER_SLOT;
-    const isPast=now>=new Date(`${ds}T${to24(time)}`);
-    if(db||sb||alreadyBooked||isFull||isPast){let r='';if(isPast)r='past';else if(db||sb)r='blocked';else if(alreadyBooked)r='already booked';else if(isFull)r='full';skipped.push(`${ds} (${r})`);}
-    else eligible.push(ds);
-  });
-  let txt='';
-  if(eligible.length)txt+=`✅ Will book (${eligible.length}): ${eligible.join(', ')}\n`;
-  if(skipped.length)txt+=`⏭ Skip (${skipped.length}): ${skipped.join(', ')}`;
-  preview.textContent=txt||'No eligible dates found.';
-}
-async function adminBulkBooking(){
-  const mid=document.getElementById('bulk-member').value,time=document.getElementById('bulk-time').value;
-  if(!mid||!time){showToast('Select member and time','error');return;}
-  const candidates=getBulkCandidates();const now=new Date();let booked=0,skipped=0;
-  showToast('Processing bulk booking...','');
-  for(const d of candidates){
-    const ds=fmtDate(d),db=allBlocks.find(b=>b.block_date===ds&&!b.block_time),sb=allBlocks.find(b=>b.block_date===ds&&b.block_time===time);
-    const bks=allBookings.filter(b=>b.slot_date===ds&&b.slot_time===time);
-    if(db||sb||bks.some(b=>b.member_id==mid)||bks.length>=MAX_PER_SLOT||now>=new Date(`${ds}T${to24(time)}`)){skipped++;continue;}
-    try{await sbFetch('bookings',{method:'POST',body:{member_id:mid,slot_date:ds,slot_time:time,is_mia:false}});booked++;}catch(e){skipped++;}
+// ===================== ADMIN =====================
+function openAdminLogin() { document.getElementById('admin-login-modal').classList.add('open'); }
+function submitAdminLogin() {
+  const pass = document.getElementById('admin-pass-input').value;
+  if (pass === ADMIN_PASSWORD) {
+    adminLoggedIn = true;
+    document.getElementById('tab-admin').style.display = 'block';
+    closeModal('admin-login-modal');
+    showTab('admin');
+    renderAdminSections();
+    showToast('Admin access granted 🔑', 'success');
+  } else {
+    showToast('Wrong admin password', 'error');
   }
-  await loadAll();updateBulkPreview();
-  showToast(`⚡ Bulk done: ${booked} booked, ${skipped} skipped.`,booked>0?'success':'error');
+}
+function renderAdminSections() {
+  renderAnnouncements();
+  loadAdminBookings();
+  renderAdminMembers();
+  renderBlocks();
+  renderMiaTracker();
+  populateAdminTimeDropdowns();
+  updateBulkPreview();
+}
+function showAdminTab(name, el) {
+  document.querySelectorAll('.admin-subsection').forEach(s => s.style.display = 'none');
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`admin-${name}`).style.display = 'block';
+  if (el) el.classList.add('active');
+  if (name === 'mia')      renderMiaTracker();
+  if (name === 'members')  renderAdminMembers();
+  if (name === 'blocks')   renderBlocks();
+  if (name === 'bookings') { loadAdminBookings(); updateBulkPreview(); }
 }
 
-// MEMBERS
-async function addMember(){
-  const name=document.getElementById('new-member-name').value.trim(),pass=document.getElementById('new-member-pass').value.trim(),type=document.getElementById('new-member-type').value,bal=parseInt(document.getElementById('new-member-balance').value)||0,expiry=document.getElementById('new-member-expiry').value;
-  if(!name||!pass){showToast('Name and password required','error');return;}
-  await sbFetch('members',{method:'POST',body:{name,password:pass,member_type:type,balance_sessions:bal,expiry_date:expiry||null}});
-  showToast('Member added','success');await loadAll();renderAdminMembers();
+// Admin view bookings list
+function loadAdminBookings() {
+  const fm = document.getElementById('admin-filter-member')?.value;
+  const { year, month } = getMonthInfo(adminMonth);
+  let bks = allBookings.filter(b => {
+    const d = parseLocalDate(b.slot_date);
+    return d.getFullYear() === year && d.getMonth() === month;
+  });
+  if (fm) bks = bks.filter(b => String(b.member_id) === fm);
+  const list = document.getElementById('admin-bookings-list'); if (!list) return;
+  list.innerHTML = bks.map(b => {
+    const m = allMembers.find(x => String(x.id) === String(b.member_id));
+    return `<div class="booking-item">
+      <div class="booking-info">
+        <div class="booking-time">${m?.name || '?'} – ${b.slot_time}</div>
+        <div class="booking-day">${b.slot_date} ${b.is_mia ? '🔴 MIA' : ''}</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="adminRemoveBooking('${b.id}')">Remove</button>
+    </div>`;
+  }).join('') || `<p style="font-size:13px;color:#888">No bookings in ${monthLabel(adminMonth)}.</p>`;
 }
-async function removeMember(id){if(!confirm('Remove this member?'))return;await sbFetch('members',{method:'DELETE',filter:`?id=eq.${id}`});await loadAll();renderAdminMembers();}
-function renderAdminMembers(){
-  const list=document.getElementById('admin-member-list');if(!list)return;
-  list.innerHTML=allMembers.map(m=>{const mia=allBookings.filter(b=>b.member_id==m.id&&b.is_mia).length;return`<div class="booking-item"><div class="booking-info"><div class="booking-time">${m.name}</div><div class="booking-day">${m.member_type} | Bal:${m.balance_sessions??'∞'} | Exp:${m.expiry_date||'-'} | MIA:${mia}</div></div><div style="display:flex;gap:4px"><button class="btn btn-outline btn-sm" onclick="openEditMember(${m.id})">Edit</button><button class="btn btn-danger btn-sm" onclick="removeMember(${m.id})">✕</button></div></div>`;}).join('')||'<p style="font-size:13px;color:#888">No members.</p>';
-}
-function openEditMember(id){const m=allMembers.find(x=>x.id==id);if(!m)return;document.getElementById('edit-member-id').value=m.id;document.getElementById('edit-member-name').value=m.name;document.getElementById('edit-member-pass').value=m.password;document.getElementById('edit-member-type').value=m.member_type||'normal';document.getElementById('edit-member-balance').value=m.balance_sessions||'';document.getElementById('edit-member-expiry').value=m.expiry_date||'';document.getElementById('edit-member-modal').classList.add('open');}
-async function saveMemberEdit(){const id=document.getElementById('edit-member-id').value,body={name:document.getElementById('edit-member-name').value.trim(),password:document.getElementById('edit-member-pass').value.trim(),member_type:document.getElementById('edit-member-type').value,balance_sessions:parseInt(document.getElementById('edit-member-balance').value)||0,expiry_date:document.getElementById('edit-member-expiry').value||null};await sbFetch('members',{method:'PATCH',filter:`?id=eq.${id}`,body});showToast('Member updated','success');closeModal('edit-member-modal');await loadAll();renderAdminMembers();}
-
-// BLOCKS
-async function addBlock(){const date=document.getElementById('block-date').value,time=document.getElementById('block-time').value,reason=document.getElementById('block-reason').value.trim();if(!date){showToast('Select a date','error');return;}await sbFetch('blocked_slots',{method:'POST',body:{block_date:date,block_time:time||null,reason:reason||'Blocked'}});showToast('Block added','success');await loadAll();renderBlocks();}
-function renderBlocks(){const list=document.getElementById('blocks-list');if(!list)return;list.innerHTML=allBlocks.map(b=>`<div class="booking-item"><div class="booking-info"><div class="booking-time">${b.block_date} ${b.block_time||'All Day'}</div><div class="booking-day">${b.reason}</div></div><button class="btn btn-danger btn-sm" onclick="removeBlock('${b.id}')">✕</button></div>`).join('')||'<p style="font-size:13px;color:#888">No blocks.</p>';}
-async function removeBlock(id){await sbFetch('blocked_slots',{method:'DELETE',filter:`?id=eq.${id}`});await loadAll();renderBlocks();}
-
-// MIA
-function renderMiaTracker(){const c=document.getElementById('mia-tracker');if(!c)return;c.innerHTML=allMembers.map(m=>{const cnt=allBookings.filter(b=>b.member_id==m.id&&b.is_mia).length,badge=cnt>=3?'🔴 At Limit':cnt===2?'🟡 Warning':'🟢 OK';return`<div class="info-row"><span>${m.name}</span><span style="font-size:12px">${badge} (${cnt}/3)</span></div>`;}).join('');}
-async function addMia(){const mid=document.getElementById('mia-member-select').value;if(!mid)return;await sbFetch('bookings',{method:'POST',body:{member_id:mid,slot_date:fmtDate(new Date()),slot_time:'00:00',is_mia:true}});showToast('MIA recorded','success');await loadAll();renderMiaTracker();}
-async function resetMia(){const mid=document.getElementById('mia-member-select').value;if(!mid)return;if(!confirm('Reset all MIA for this member?'))return;await sbFetch('bookings',{method:'DELETE',filter:`?member_id=eq.${mid}&is_mia=eq.true`});showToast('MIA reset','success');await loadAll();renderMiaTracker();}
-
-// EXPORT
-async function exportTimetable(which){
-  const prev=viewMonth;viewMonth=which;
-  const area=document.getElementById('export-area');
-  area.innerHTML=`<div style="font-family:'Nunito',sans-serif;padding:20px;background:white"><div style="margin-bottom:16px"><h2 style="font-family:'Playfair Display',serif;color:#0d1f3c;margin:0">Tzu Chi SEEN(Bukit Batok) – Gym Tonic</h2><p style="color:#666;margin:0;font-size:13px">${monthLabel(which)} Timetable</p></div></div>`;
-  const td=document.createElement('div');renderTimetable(td);area.firstElementChild.appendChild(td);
-  area.style.left='0';area.style.top='0';area.style.position='absolute';
-  try{const canvas=await html2canvas(area,{scale:2,useCORS:true});const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download=`tzu-chi-seen-${which}.png`;a.click();showToast('Downloaded! 📸','success');}
-  catch(e){showToast('Export failed.','error');}
-  area.style.left='-9999px';viewMonth=prev;
+function selectAdminMonth(w) {
+  adminMonth = w;
+  document.getElementById('abwbtn-this').className = 'mbtn' + (w === 'this' ? ' active' : '');
+  document.getElementById('abwbtn-next').className = 'mbtn' + (w === 'next' ? ' active' : '');
+  loadAdminBookings();
 }
 
-// CHATBOT
-function toggleChat(){document.getElementById('chat-window').classList.toggle('open');}
-function sendChip(text){document.getElementById('chat-input').value=text;sendChat();}
-async function sendChat(){const input=document.getElementById('chat-input'),msg=input.value.trim();if(!msg)return;input.value='';addChatMsg(msg,'user');addChatMsg(await getCourtBotReply(msg),'bot');}
-function addChatMsg(text,who){const msgs=document.getElementById('chat-messages'),div=document.createElement('div');div.className=`chat-msg ${who}`;div.textContent=text;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;}
-async function getCourtBotReply(msg){
-  const m=msg.toLowerCase();
-  if(m.includes('class')||m.includes('schedule')||m.includes('time'))return'Classes: Mon–Fri 8:30am–4:20pm (9 slots), Sat 8:30am–11:00am (4 slots).';
-  if(m.includes('rule')||m.includes('book')||m.includes('limit'))return'Max 6/slot. Normal=2x/week, Maintenance=1x/week. Max 1 class/day. Book current or next month. Closes 5 min before class.';
-  if(m.includes('cancel'))return'Cancel up to 1 hour before class. Within 1 hour — no cancellation allowed.';
-  if(m.includes('mia')||m.includes('absent'))return'MIA = absent without cancelling. 3 MIA = admin may revoke membership. Please cancel if you can\'t attend!';
-  if(m.includes('password')||m.includes('login'))return'Each member has a personal password set by admin. Contact admin if forgotten.';
-  try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:`You are CourtBot for Tzu Chi SEEN(Bukit Batok) Gym Tonic. Classes Mon-Fri 8:30am-4:20pm, Sat 8:30am-11am. Max 6/slot. Normal=2x/week, maintenance=1x/week. 1/day. Book current/next month. Cancel 1hr before. 3 MIA = revoke. Answer under 3 sentences.`,messages:[{role:'user',content:msg}]})});const data=await res.json();return data.content?.[0]?.text||"I'm not sure. Ask admin!";}
-  catch{return"I'm not sure. Ask admin for help!";}
+// Admin remove booking (restores balance)
+async function adminRemoveBooking(id) {
+  if (!confirm('Remove this booking?')) return;
+  try {
+    const bk = allBookings.find(b => String(b.id) === String(id));
+    await sbFetch('bookings', { method: 'DELETE', filter: `?id=eq.${id}` });
+    if (bk && !bk.is_mia) {
+      const owner = allMembers.find(m => String(m.id) === String(bk.member_id));
+      if (owner && owner.balance_sessions !== null) {
+        await sbFetch('members', {
+          method: 'PATCH', filter: `?id=eq.${owner.id}`,
+          body: { balance_sessions: owner.balance_sessions + 1 }
+        });
+      }
+    }
+    showToast('Booking removed ✅', 'success');
+    await loadAll(); loadAdminBookings();
+  } catch (e) { console.error(e); showToast('Remove failed: ' + e.message, 'error'); }
 }
 
-// UI
-function showTab(name){document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));document.getElementById(`section-${name}`).classList.add('active');document.getElementById(`tab-${name}`).classList.add('active');if(name==='my')renderMyBookings();if(name==='timetable')renderTimetable();if(name==='admin'&&adminLoggedIn)renderAdminSections();}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className=type;t.style.display='block';setTimeout(()=>t.style.display='none',3500);}
+// Admin add single booking (deducts balance)
+async function adminAddBooking() {
+  const mid  = document.getElementById('admin-add-member').value;
+  const date = document.getElementById('admin-add-date').value;
+  const time = document.getElementById('admin-add-time').value;
+  if (!mid || !date || !time) { showToast('Fill all fields', 'error'); return; }
+  try {
+    await sbFetch('bookings', { method: 'POST', body: { member_id: mid, slot_date: date, slot_time: time, is_mia: false } });
+    // Deduct balance
+    const member = allMembers.find(m => String(m.id) === mid);
+    if (member && member.balance_sessions !== null && member.balance_sessions > 0) {
+      await sbFetch('members', {
+        method: 'PATCH', filter: `?id=eq.${mid}`,
+        body: { balance_sessions: member.balance_sessions - 1 }
+      });
+    }
+    showToast('Booking added ✅', 'success');
+    await loadAll(); loadAdminBookings();
+  } catch (e) { console.error(e); showToast('Failed: ' + e.message, 'error'); }
+}
 
+function populateAdminTimeDropdowns() {
+  const all = [...new Set([...TIMES_WEEKDAY, ...TIMES_SATURDAY])];
+  ['admin-add-time', 'block-time', 'bulk-time'].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    const base = id === 'block-time' ? '<option value="">-- All Day --</option>' : '<option value="">-- Select --</option>';
+    el.innerHTML = base + all.map(t => `<option value="${t}">${t}</option>`).join('');
+  });
+}
+
+// ===================== BULK BOOKING =====================
+function selectBulkMonth(w) {
+  bulkMonth = w;
+  document.getElementById('bulk-month-this').className = 'mbtn' + (w === 'this' ? ' active' : '');
+  document.getElementById('bulk-month-next').className = 'mbtn' + (w === 'next' ? ' active' : '');
+  updateBulkPreview();
+}
+function getBulkCandidates() {
+  const dow  = parseInt(document.getElementById('bulk-day')?.value || '2');
+  const time = document.getElementById('bulk-time')?.value;
+  if (!time) return [];
+  return getMonthDates(bulkMonth).filter(d => d.getDay() === dow && getTimesForDay(d).includes(time));
+}
+function updateBulkPreview() {
+  const preview = document.getElementById('bulk-preview'); if (!preview) return;
+  const mid  = document.getElementById('bulk-member')?.value;
+  const time = document.getElementById('bulk-time')?.value;
+  if (!time) { preview.textContent = 'Select a time slot to preview dates.'; return; }
+  const candidates = getBulkCandidates();
+  if (!candidates.length) { preview.textContent = 'No matching dates found in this month.'; return; }
+  const now = new Date();
+  const eligible = [], skipped = [];
+  candidates.forEach(d => {
+    const ds  = fmtDate(d);
+    const db  = allBlocks.find(b => b.block_date === ds && !b.block_time);
+    const sb  = allBlocks.find(b => b.block_date === ds && b.block_time === time);
+    const bks = allBookings.filter(b => b.slot_date === ds && b.slot_time === time);
+    const alreadyBooked = mid ? bks.some(b => String(b.member_id) === mid) : false;
+    const isFull = bks.length >= MAX_PER_SLOT;
+    const isPast = now >= new Date(`${ds}T${to24(time)}`);
+    if (db || sb || alreadyBooked || isFull || isPast) {
+      let r = isPast ? 'past' : (db || sb) ? 'blocked' : alreadyBooked ? 'already booked' : 'full';
+      skipped.push(`${ds} (${r})`);
+    } else { eligible.push(ds); }
+  });
+  let txt = '';
+  if (eligible.length) txt += `✅ Will book (${eligible.length}): ${eligible.join(', ')}\n`;
+  if (skipped.length)  txt += `⏭ Skip (${skipped.length}): ${skipped.join(', ')}`;
+  preview.textContent = txt || 'No eligible dates found.';
+}
+
+// Admin bulk booking – deducts balance for each booking
+async function adminBulkBooking() {
+  const mid  = document.getElementById('bulk-member').value;
+  const time = document.getElementById('bulk-time').value;
+  if (!mid || !time) { showToast('Select member and time', 'error'); return; }
+
+  const candidates = getBulkCandidates();
+  if (!candidates.length) { showToast('No candidate dates found.', 'error'); return; }
+
+  const now = new Date();
+  let booked = 0, skipped = 0;
+  // Track balance locally as we deduct
+  let bal = allMembers.find(m => String(m.id) === mid)?.balance_sessions ?? null;
+
+  showToast('Processing…', '');
+
+  for (const d of candidates) {
+    const ds  = fmtDate(d);
+    const db  = allBlocks.find(b => b.block_date === ds && !b.block_time);
+    const sb  = allBlocks.find(b => b.block_date === ds && b.block_time === time);
+    const bks = allBookings.filter(b => b.slot_date === ds && b.slot_time === time);
+    if (db || sb || bks.some(b => String(b.member_id) === mid) || bks.length >= MAX_PER_SLOT || now >= new Date(`${ds}T${to24(time)}`)) {
+      skipped++; continue;
+    }
+    if (bal !== null && bal <= 0) {
+      showToast(`⚡ Stopped – no sessions left. ${booked} booked, ${skipped} skipped.`, 'error');
+      await loadAll(); updateBulkPreview(); return;
+    }
+    try {
+      await sbFetch('bookings', { method: 'POST', body: { member_id: mid, slot_date: ds, slot_time: time, is_mia: false } });
+      if (bal !== null) {
+        bal--;
+        await sbFetch('members', { method: 'PATCH', filter: `?id=eq.${mid}`, body: { balance_sessions: bal } });
+      }
+      booked++;
+    } catch (e) { console.error(e); skipped++; }
+  }
+  await loadAll(); updateBulkPreview();
+  showToast(`⚡ Done: ${booked} booked, ${skipped} skipped.`, booked > 0 ? 'success' : 'error');
+}
+
+// ===================== MEMBERS =====================
+async function addMember() {
+  const name   = document.getElementById('new-member-name').value.trim();
+  const pass   = document.getElementById('new-member-pass').value.trim();
+  const type   = document.getElementById('new-member-type').value;
+  const bal    = parseInt(document.getElementById('new-member-balance').value) || 0;
+  const expiry = document.getElementById('new-member-expiry').value;
+  if (!name || !pass) { showToast('Name and password required', 'error'); return; }
+  await sbFetch('members', { method: 'POST', body: { name, password: pass, member_type: type, balance_sessions: bal, expiry_date: expiry || null } });
+  showToast('Member added', 'success');
+  await loadAll(); renderAdminMembers();
+}
+async function removeMember(id) {
+  if (!confirm('Remove this member?')) return;
+  await sbFetch('members', { method: 'DELETE', filter: `?id=eq.${id}` });
+  await loadAll(); renderAdminMembers();
+}
+function renderAdminMembers() {
+  const list = document.getElementById('admin-member-list'); if (!list) return;
+  list.innerHTML = allMembers.map(m => {
+    const mia = allBookings.filter(b => String(b.member_id) === String(m.id) && b.is_mia).length;
+    return `<div class="booking-item">
+      <div class="booking-info">
+        <div class="booking-time">${m.name}</div>
+        <div class="booking-day">${m.member_type} | Bal:${m.balance_sessions ?? '∞'} | Exp:${m.expiry_date || '-'} | MIA:${mia}</div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <button class="btn btn-outline btn-sm" onclick="openEditMember(${m.id})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="removeMember(${m.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('') || '<p style="font-size:13px;color:#888">No members.</p>';
+}
+function openEditMember(id) {
+  const m = allMembers.find(x => String(x.id) === String(id)); if (!m) return;
+  document.getElementById('edit-member-id').value      = m.id;
+  document.getElementById('edit-member-name').value    = m.name;
+  document.getElementById('edit-member-pass').value    = m.password;
+  document.getElementById('edit-member-type').value    = m.member_type || 'normal';
+  document.getElementById('edit-member-balance').value = m.balance_sessions || '';
+  document.getElementById('edit-member-expiry').value  = m.expiry_date || '';
+  document.getElementById('edit-member-modal').classList.add('open');
+}
+async function saveMemberEdit() {
+  const id   = document.getElementById('edit-member-id').value;
+  const body = {
+    name:             document.getElementById('edit-member-name').value.trim(),
+    password:         document.getElementById('edit-member-pass').value.trim(),
+    member_type:      document.getElementById('edit-member-type').value,
+    balance_sessions: parseInt(document.getElementById('edit-member-balance').value) || 0,
+    expiry_date:      document.getElementById('edit-member-expiry').value || null,
+  };
+  await sbFetch('members', { method: 'PATCH', filter: `?id=eq.${id}`, body });
+  showToast('Member updated', 'success');
+  closeModal('edit-member-modal');
+  await loadAll(); renderAdminMembers();
+}
+
+// ===================== BLOCKS =====================
+async function addBlock() {
+  const date   = document.getElementById('block-date').value;
+  const time   = document.getElementById('block-time').value;
+  const reason = document.getElementById('block-reason').value.trim();
+  if (!date) { showToast('Select a date', 'error'); return; }
+  await sbFetch('blocked_slots', { method: 'POST', body: { block_date: date, block_time: time || null, reason: reason || 'Blocked' } });
+  showToast('Block added', 'success');
+  await loadAll(); renderBlocks();
+}
+function renderBlocks() {
+  const list = document.getElementById('blocks-list'); if (!list) return;
+  list.innerHTML = allBlocks.map(b =>
+    `<div class="booking-item">
+      <div class="booking-info">
+        <div class="booking-time">${b.block_date} ${b.block_time || 'All Day'}</div>
+        <div class="booking-day">${b.reason}</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="removeBlock('${b.id}')">✕</button>
+    </div>`
+  ).join('') || '<p style="font-size:13px;color:#888">No blocks.</p>';
+}
+async function removeBlock(id) {
+  await sbFetch('blocked_slots', { method: 'DELETE', filter: `?id=eq.${id}` });
+  await loadAll(); renderBlocks();
+}
+
+// ===================== MIA =====================
+function renderMiaTracker() {
+  const c = document.getElementById('mia-tracker'); if (!c) return;
+  c.innerHTML = allMembers.map(m => {
+    const cnt   = allBookings.filter(b => String(b.member_id) === String(m.id) && b.is_mia).length;
+    const badge = cnt >= 3 ? '🔴 At Limit' : cnt === 2 ? '🟡 Warning' : '🟢 OK';
+    return `<div class="info-row"><span>${m.name}</span><span style="font-size:12px">${badge} (${cnt}/3)</span></div>`;
+  }).join('');
+}
+async function addMia() {
+  const mid = document.getElementById('mia-member-select').value; if (!mid) return;
+  await sbFetch('bookings', { method: 'POST', body: { member_id: mid, slot_date: fmtDate(new Date()), slot_time: '00:00', is_mia: true } });
+  showToast('MIA recorded', 'success');
+  await loadAll(); renderMiaTracker();
+}
+async function resetMia() {
+  const mid = document.getElementById('mia-member-select').value; if (!mid) return;
+  if (!confirm('Reset all MIA for this member?')) return;
+  await sbFetch('bookings', { method: 'DELETE', filter: `?member_id=eq.${mid}&is_mia=eq.true` });
+  showToast('MIA reset', 'success');
+  await loadAll(); renderMiaTracker();
+}
+
+// ===================== EXPORT =====================
+async function exportTimetable(which) {
+  const prev = viewMonth; viewMonth = which;
+  const area = document.getElementById('export-area');
+  area.innerHTML = `<div style="font-family:'Nunito',sans-serif;padding:20px;background:white">
+    <div style="margin-bottom:16px">
+      <h2 style="font-family:'Playfair Display',serif;color:#0d1f3c;margin:0">Tzu Chi SEEN(Bukit Batok) – Gym Tonic</h2>
+      <p style="color:#666;margin:0;font-size:13px">${monthLabel(which)} Timetable</p>
+    </div>
+  </div>`;
+  const td = document.createElement('div');
+  renderTimetable(td);
+  area.firstElementChild.appendChild(td);
+  area.style.left = '0'; area.style.top = '0'; area.style.position = 'absolute';
+  try {
+    const canvas = await html2canvas(area, { scale: 2, useCORS: true });
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = `tzu-chi-seen-${which}.png`;
+    a.click();
+    showToast('Downloaded! 📸', 'success');
+  } catch (e) { showToast('Export failed.', 'error'); }
+  area.style.left = '-9999px';
+  viewMonth = prev;
+}
+
+// ===================== CHATBOT =====================
+function toggleChat() { document.getElementById('chat-window').classList.toggle('open'); }
+function sendChip(text) { document.getElementById('chat-input').value = text; sendChat(); }
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg   = input.value.trim(); if (!msg) return;
+  input.value = '';
+  addChatMsg(msg, 'user');
+  addChatMsg(await getCourtBotReply(msg), 'bot');
+}
+function addChatMsg(text, who) {
+  const msgs = document.getElementById('chat-messages');
+  const div  = document.createElement('div');
+  div.className = `chat-msg ${who}`; div.textContent = text;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+async function getCourtBotReply(msg) {
+  const m = msg.toLowerCase();
+  if (m.includes('class') || m.includes('schedule') || m.includes('time'))
+    return 'Classes: Mon–Fri 8:30am–4:20pm (9 slots), Sat 8:30am–11:00am (4 slots).';
+  if (m.includes('rule') || m.includes('book') || m.includes('limit'))
+    return 'Max 6/slot. Normal=2x/week, Maintenance=1x/week. Max 1 class/day. Book current or next month. Closes 5 min before class.';
+  if (m.includes('cancel'))
+    return 'Cancel up to 1 hour before class. Within 1 hour — no cancellation allowed.';
+  if (m.includes('mia') || m.includes('absent'))
+    return "MIA = absent without cancelling. 3 MIA = admin may revoke membership. Please cancel if you can't attend!";
+  if (m.includes('password') || m.includes('login'))
+    return 'Each member has a personal password set by admin. Contact admin if forgotten.';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514', max_tokens: 200,
+        system: 'You are CourtBot for Tzu Chi SEEN(Bukit Batok) Gym Tonic. Classes Mon-Fri 8:30am-4:20pm, Sat 8:30am-11am. Max 6/slot. Normal=2x/week, maintenance=1x/week. Max 1 class/day. Book current/next month. Cancel 1hr before. 3 MIA = revoke. Answer under 3 sentences.',
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+    const data = await res.json();
+    return data.content?.[0]?.text || "I'm not sure. Ask admin!";
+  } catch { return "I'm not sure. Ask admin for help!"; }
+}
+
+// ===================== UI HELPERS =====================
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(`section-${name}`).classList.add('active');
+  document.getElementById(`tab-${name}`).classList.add('active');
+  if (name === 'my')                      renderMyBookings();
+  if (name === 'timetable')               renderTimetable();
+  if (name === 'admin' && adminLoggedIn)  renderAdminSections();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = type; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3500);
+}
+
+// ===================== INIT =====================
 loadAll();
 </script>
 
