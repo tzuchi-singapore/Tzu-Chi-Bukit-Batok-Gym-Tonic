@@ -182,6 +182,34 @@ box-shadow: 0 2px 8px rgba(46,125,50,0.4) !important;
 
 #bulk-preview { background: #f0faf5; border-radius: 8px; padding: 8px 10px; font-size: 12px; color: #333; min-height: 36px; margin: 6px 0 10px; line-height: 1.8; white-space: pre-wrap; }
 
+/* WAITLIST STYLES */
+.wl-badge {
+display: inline-flex; align-items: center; gap: 4px;
+background: #fff3e0; color: #e65100; border: 1.5px solid #ff9800;
+border-radius: 6px; padding: 3px 8px; font-size: 11px; font-weight: 700;
+}
+.wl-position {
+background: #ff9800; color: #fff; border-radius: 50%;
+width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center;
+font-size: 10px; font-weight: 800;
+}
+.wl-btn {
+font-size: 12px; padding: 5px 10px; background: #ff9800; color: #fff;
+border: none; border-radius: 6px; font-weight: 700; cursor: pointer;
+}
+.wl-cancel-btn {
+font-size: 12px; padding: 5px 10px; background: #e65100; color: #fff;
+border: none; border-radius: 6px; font-weight: 700; cursor: pointer;
+}
+.wl-item {
+display: flex; justify-content: space-between; align-items: center;
+padding: 8px; background: #fff8f0; border-radius: 8px; margin-bottom: 6px;
+font-size: 13px; border-left: 3px solid #ff9800;
+}
+.wl-info { flex: 1; }
+.wl-time { font-weight: 700; color: #e65100; }
+.wl-day  { color: #666; font-size: 12px; }
+
 @media(max-width:400px) { table { font-size:9px; } th,td { padding:3px 2px; min-width:44px; } }
 </style>
 
@@ -208,6 +236,7 @@ box-shadow: 0 2px 8px rgba(46,125,50,0.4) !important;
   <div class="tab active" onclick="showTab('book')" id="tab-book">📅 Book</div>
   <div class="tab" onclick="showTab('my')" id="tab-my">👤 My Bookings</div>
   <div class="tab" onclick="showTab('timetable')" id="tab-timetable">🗓 Timetable</div>
+  <div class="tab" onclick="showTab('waitlist')" id="tab-waitlist" style="display:none">⏳ Waitlist</div>
   <div class="tab" onclick="showTab('admin')" id="tab-admin" style="display:none">⚙️ Admin</div>
 </div>
 
@@ -268,6 +297,16 @@ box-shadow: 0 2px 8px rgba(46,125,50,0.4) !important;
     </div>
     <div id="timetable-month-label" style="font-size:13px;font-weight:700;color:var(--jade-dark);margin-bottom:10px;"></div>
     <div class="timetable-grid" id="timetable-container"></div>
+  </div>
+</div>
+
+<!-- WAITLIST -->
+
+<div id="section-waitlist" class="section">
+  <div class="card">
+    <h3 id="lbl-my-waitlist">⏳ My Waitlist</h3>
+    <p id="lbl-waitlist-login" style="font-size:13px;color:#666;margin-bottom:10px">Please login in the Book tab first.</p>
+    <div id="my-waitlist-list"></div>
   </div>
 </div>
 
@@ -473,7 +512,7 @@ let myMonth    = 'this';
 let adminMonth = 'this';
 let bulkMonth  = 'this';
 let adminLoggedIn = false;
-let allMembers = [], allBookings = [], allBlocks = [], allAnnouncements = [];
+let allMembers = [], allBookings = [], allBlocks = [], allAnnouncements = [], allWaitlist = [];
 
 // ===================== TRANSLATIONS =====================
 const T = {
@@ -537,11 +576,12 @@ async function sbFetch(table, options = {}) {
 // ===================== DATA LOAD =====================
 async function loadAll() {
   try {
-    [allMembers, allBookings, allBlocks, allAnnouncements] = await Promise.all([
+    [allMembers, allBookings, allBlocks, allAnnouncements, allWaitlist] = await Promise.all([
       sbFetch('members',       { filter: '?order=name.asc' }),
       sbFetch('bookings',      { filter: '?order=slot_date.asc,slot_time.asc' }),
       sbFetch('blocked_slots', { filter: '?order=block_date.asc' }),
       sbFetch('announcements', { filter: '?order=created_at.desc' }),
+      sbFetch('waitlist',      { filter: '?order=slot_date.asc,slot_time.asc,created_at.asc' }),
     ]);
     // CRITICAL: always re-sync currentMember from fresh DB data
     if (currentMember) {
@@ -552,7 +592,7 @@ async function loadAll() {
     renderAnnouncements();
     renderTimetable();
     renderBookGrid();
-    if (currentMember) { updateMemberInfo(); renderMyBookings(); }
+    if (currentMember) { updateMemberInfo(); renderMyBookings(); renderMyWaitlist(); }
     if (adminLoggedIn) renderAdminSections();
   } catch (e) {
     showToast('Error loading data: ' + e.message, 'error');
@@ -648,9 +688,12 @@ async function loginMember() {
   document.getElementById('member-info-section').style.display = 'block';
   document.getElementById('lbl-login-first').style.display = 'none';
   document.getElementById('my-month-sel').style.display = 'flex';
+  document.getElementById('tab-waitlist').style.display = 'block';
+  document.getElementById('lbl-waitlist-login').style.display = 'none';
   updateMemberInfo();
   renderBookGrid();
   renderMyBookings();
+  renderMyWaitlist();
   showToast(`Welcome, ${member.name}! 🌟`, 'success');
 }
 function logoutMember() {
@@ -661,6 +704,13 @@ function logoutMember() {
   document.getElementById('my-month-sel').style.display = 'none';
   document.getElementById('my-bookings-list').innerHTML = '';
   document.getElementById('book-grid').innerHTML = '';
+  document.getElementById('tab-waitlist').style.display = 'none';
+  document.getElementById('my-waitlist-list').innerHTML = '';
+  document.getElementById('lbl-waitlist-login').style.display = 'block';
+  // If currently on waitlist tab, go back to book tab
+  if (document.getElementById('section-waitlist').classList.contains('active')) {
+    showTab('book');
+  }
 }
 function updateMemberInfo() {
   if (!currentMember) return;
@@ -737,13 +787,19 @@ function renderBookGrid() {
         const count     = slotBks.length;
         const myBk      = slotBks.find(b => String(b.member_id) === String(currentMember.id));
 
+        // Waitlist for this slot
+        const slotWl    = allWaitlist.filter(w => w.slot_date === ds && w.slot_time === t);
+        const myWl      = slotWl.find(w => String(w.member_id) === String(currentMember.id));
+        const myWlPos   = myWl ? slotWl.findIndex(w => String(w.member_id) === String(currentMember.id)) + 1 : 0;
+        const wlCount   = slotWl.length;
+
         // Check if slot is past (close 5 min before)
         const slotDT  = new Date(`${ds}T${to24(t)}`);
         const isPast  = now >= new Date(slotDT.getTime() - 5 * 60000);
 
         html += `<div class="slot-row">
           <span class="slot-time">${t}</span>
-          <span class="slot-cnt">${count}/${MAX_PER_SLOT}</span>`;
+          <span class="slot-cnt">${count}/${MAX_PER_SLOT}${wlCount > 0 ? ` <span style="color:#ff9800;font-size:10px">(+${wlCount}⏳)</span>` : ''}</span>`;
 
         if (slotBlock) {
           html += `<span style="font-size:11px;color:#999">🚫 ${slotBlock.reason}</span>`;
@@ -755,8 +811,22 @@ function renderBookGrid() {
           html += canCancel
             ? `<button onclick="cancelBooking('${myBk.id}')" style="font-size:12px;padding:5px 10px;background:#c0392b;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;">Cancel ✕</button>`
             : `<span style="font-size:11px;color:var(--jade-dark);font-weight:700">✅ Booked</span>`;
+        } else if (myWl) {
+          // Member is on waitlist for this slot
+          const canCancelWl = now < new Date(slotDT.getTime() - 60 * 60000);
+          html += `<span class="wl-badge">⏳ #${myWlPos} Waitlist</span>`;
+          if (canCancelWl) {
+            html += `&nbsp;<button class="wl-cancel-btn" onclick="cancelWaitlist('${myWl.id}')">✕</button>`;
+          }
         } else if (count >= MAX_PER_SLOT) {
-          html += `<span style="font-size:11px;color:var(--red);font-weight:700">Full</span>`;
+          // Slot full – show waitlist button (if member can still join based on day/week rules)
+          if (!dayFull && !weekFull) {
+            html += `<button class="wl-btn" onclick="joinWaitlist('${ds}','${t}')">⏳ Waitlist</button>`;
+          } else if (dayFull) {
+            html += `<span style="font-size:11px;color:#f39c12;font-weight:700">1/day max</span>`;
+          } else {
+            html += `<span style="font-size:11px;color:#f39c12;font-weight:700">${maxPerWeek}/wk max</span>`;
+          }
         } else if (dayFull) {
           html += `<span style="font-size:11px;color:#f39c12;font-weight:700">1/day max</span>`;
         } else if (weekFull) {
@@ -849,14 +919,171 @@ async function cancelBooking(bookingId) {
       }
     }
     showToast('Booking cancelled.', 'success');
+    // Reload data first so waitlist is up to date, then promote
     await loadAll();
+    if (bk && !bk.is_mia) {
+      await promoteFromWaitlist(bk.slot_date, bk.slot_time);
+      await loadAll(); // reload again after promotion to reflect new state
+    }
   } catch (e) {
     console.error(e);
     showToast('Cancel failed: ' + e.message, 'error');
   }
 }
 
-// ===================== MY BOOKINGS =====================
+// ===================== WAITLIST =====================
+async function joinWaitlist(date, time) {
+  if (!currentMember) { showToast('Please login first', 'warning'); return; }
+
+  // Validate day/week rules still apply
+  const myDayBks = allBookings.filter(b =>
+    String(b.member_id) === String(currentMember.id) && b.slot_date === date && !b.is_mia
+  );
+  if (myDayBks.length >= 1) { showToast('Only 1 booking per day allowed.', 'warning'); return; }
+
+  const weekDates  = getWeekDatesFor(date);
+  const myWeekBks  = allBookings.filter(b =>
+    String(b.member_id) === String(currentMember.id) && weekDates.includes(b.slot_date) && !b.is_mia
+  );
+  const maxPerWeek = currentMember.member_type === 'maintenance' ? 1 : 2;
+  if (myWeekBks.length >= maxPerWeek) {
+    showToast(`Max ${maxPerWeek} booking(s)/week for your membership type.`, 'warning'); return;
+  }
+
+  // Check expiry
+  if (currentMember.expiry_date) {
+    const expiryDt = parseLocalDate(currentMember.expiry_date);
+    const todayDt  = new Date(); todayDt.setHours(0,0,0,0);
+    if (expiryDt < todayDt) { showToast('Your membership has expired.', 'error'); return; }
+  }
+
+  // Already on waitlist?
+  const already = allWaitlist.find(w =>
+    w.slot_date === date && w.slot_time === time && String(w.member_id) === String(currentMember.id)
+  );
+  if (already) { showToast('You are already on the waitlist for this slot.', 'warning'); return; }
+
+  try {
+    await sbFetch('waitlist', {
+      method: 'POST',
+      body: { member_id: currentMember.id, slot_date: date, slot_time: time }
+    });
+    // Compute position
+    await loadAll();
+    const slotWl = allWaitlist.filter(w => w.slot_date === date && w.slot_time === time);
+    const pos    = slotWl.findIndex(w => String(w.member_id) === String(currentMember.id)) + 1;
+    showToast(`Added to waitlist! You are #${pos} in queue. 🎫`, 'success');
+  } catch (e) {
+    console.error(e);
+    showToast('Failed to join waitlist: ' + e.message, 'error');
+  }
+}
+
+async function cancelWaitlist(waitlistId) {
+  if (!confirm('Remove yourself from this waitlist?')) return;
+  try {
+    await sbFetch('waitlist', { method: 'DELETE', filter: `?id=eq.${waitlistId}` });
+    showToast('Removed from waitlist.', 'success');
+    await loadAll();
+  } catch (e) {
+    console.error(e);
+    showToast('Failed to remove from waitlist: ' + e.message, 'error');
+  }
+}
+
+// Called after a booking is cancelled – promote first person on waitlist if any
+async function promoteFromWaitlist(slot_date, slot_time) {
+  // Get waitlist for this slot ordered by created_at (earliest first)
+  const slotWl = allWaitlist
+    .filter(w => w.slot_date === slot_date && w.slot_time === slot_time)
+    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+  if (!slotWl.length) return; // nobody waiting
+
+  const first = slotWl[0];
+  const promotedMember = allMembers.find(m => String(m.id) === String(first.member_id));
+  if (!promotedMember) {
+    // Member no longer exists – remove stale entry and try next
+    await sbFetch('waitlist', { method: 'DELETE', filter: `?id=eq.${first.id}` });
+    await loadAll();
+    await promoteFromWaitlist(slot_date, slot_time);
+    return;
+  }
+
+  // Check promoted member still has valid membership
+  if (promotedMember.expiry_date) {
+    const exp = parseLocalDate(promotedMember.expiry_date);
+    const now = new Date(); now.setHours(0,0,0,0);
+    const slotD = parseLocalDate(slot_date);
+    if (exp < now || exp < slotD) {
+      // Skip expired member, remove and try next
+      await sbFetch('waitlist', { method: 'DELETE', filter: `?id=eq.${first.id}` });
+      await loadAll();
+      await promoteFromWaitlist(slot_date, slot_time);
+      return;
+    }
+  }
+
+  try {
+    // Create the booking for the promoted member
+    await sbFetch('bookings', {
+      method: 'POST',
+      body: { member_id: first.member_id, slot_date, slot_time, is_mia: false }
+    });
+    // Deduct balance
+    if (promotedMember.balance_sessions !== null && promotedMember.balance_sessions > 0) {
+      await sbFetch('members', {
+        method: 'PATCH',
+        filter: `?id=eq.${first.member_id}`,
+        body: { balance_sessions: promotedMember.balance_sessions - 1 }
+      });
+    }
+    // Remove from waitlist
+    await sbFetch('waitlist', { method: 'DELETE', filter: `?id=eq.${first.id}` });
+    console.log(`✅ Promoted ${promotedMember.name} from waitlist to ${slot_date} ${slot_time}`);
+  } catch (e) {
+    console.error('Promote failed:', e);
+  }
+}
+
+// My Waitlist view
+function renderMyWaitlist() {
+  const list = document.getElementById('my-waitlist-list');
+  const lbl  = document.getElementById('lbl-waitlist-login');
+  if (!currentMember) { list.innerHTML = ''; lbl.style.display = 'block'; return; }
+  lbl.style.display = 'none';
+
+  const now = new Date();
+  const mine = allWaitlist
+    .filter(w => String(w.member_id) === String(currentMember.id))
+    .filter(w => {
+      const slotDT = new Date(`${w.slot_date}T${to24(w.slot_time)}`);
+      return slotDT > now; // only future slots
+    })
+    .sort((a, b) => a.slot_date > b.slot_date ? 1 : a.slot_date < b.slot_date ? -1 : 0);
+
+  if (!mine.length) {
+    list.innerHTML = '<p style="font-size:13px;color:#888">You are not on any waitlists.</p>';
+    return;
+  }
+  list.innerHTML = mine.map(w => {
+    const slotWl = allWaitlist
+      .filter(x => x.slot_date === w.slot_date && x.slot_time === w.slot_time)
+      .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    const pos = slotWl.findIndex(x => String(x.member_id) === String(currentMember.id)) + 1;
+    const total = slotWl.length;
+    const slotDT = new Date(`${w.slot_date}T${to24(w.slot_time)}`);
+    const canCancel = now < new Date(slotDT.getTime() - 60 * 60000);
+    return `<div class="wl-item">
+      <div class="wl-info">
+        <div class="wl-time">⏳ ${w.slot_time} — Position <span class="wl-position">${pos}</span> of ${total}</div>
+        <div class="wl-day">${w.slot_date} · ${DAYS_FULL[parseLocalDate(w.slot_date).getDay()]}</div>
+        <div style="font-size:11px;color:#999;margin-top:2px">You'll be auto-booked when a spot opens</div>
+      </div>
+      ${canCancel ? `<button class="wl-cancel-btn" onclick="cancelWaitlist('${w.id}')">Leave ✕</button>` : '<span style="font-size:11px;color:#bbb">Too late to leave</span>'}
+    </div>`;
+  }).join('');
+}
 function selectMyMonth(w) {
   myMonth = w;
   document.getElementById('mybtn-this').className = 'mbtn' + (w === 'this' ? ' active' : '');
@@ -1066,7 +1293,13 @@ async function adminRemoveBooking(id) {
       }
     }
     showToast('Booking removed ✅', 'success');
-    await loadAll(); loadAdminBookings();
+    await loadAll();
+    // Auto-promote from waitlist
+    if (bk && !bk.is_mia) {
+      await promoteFromWaitlist(bk.slot_date, bk.slot_time);
+      await loadAll();
+    }
+    loadAdminBookings();
   } catch (e) { console.error(e); showToast('Remove failed: ' + e.message, 'error'); }
 }
 
@@ -1366,6 +1599,7 @@ function showTab(name) {
   document.getElementById(`tab-${name}`).classList.add('active');
   if (name === 'my')                      renderMyBookings();
   if (name === 'timetable')               renderTimetable();
+  if (name === 'waitlist')                renderMyWaitlist();
   if (name === 'admin' && adminLoggedIn)  renderAdminSections();
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
