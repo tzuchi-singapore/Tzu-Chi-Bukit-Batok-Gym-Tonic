@@ -18,7 +18,7 @@
     --cream: #f8f4ee; --white: #ffffff; --red: #c0392b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--navy); min-height: 100vh; }
+  body { font-family: 'Nunito', sans-serif; background: var(--cream); color: #1a1a1a; min-height: 100vh; font-size: 16px; }
   h1,h2,h3,h4 { font-family: 'Playfair Display', serif; }
 
 #navbar { background: linear-gradient(135deg, var(–navy-light), var(–navy)); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
@@ -43,7 +43,7 @@ flex-shrink: 0; box-shadow: 0 1px 6px rgba(0,0,0,0.25);
 #announcement-banner { background: linear-gradient(90deg, var(–jade), var(–jade-dark)); color: var(–gold-light); padding: 8px 16px; font-size: 13px; text-align: center; display: none; }
 
 #tabs { display: flex; background: var(–navy); overflow-x: auto; }
-.tab { padding: 12px 16px; color: #ccc; cursor: pointer; white-space: nowrap; font-size: 13px; font-weight: 700; border-bottom: 3px solid transparent; transition: all 0.2s; }
+.tab { padding: 12px 16px; color: #ccc; cursor: pointer; white-space: nowrap; font-size: 15px; font-weight: 700; border-bottom: 3px solid transparent; transition: all 0.2s; }
 .tab.active { color: #FFE57A; border-bottom-color: #FFE57A; }
 .tab:hover { color: #fff; }
 
@@ -51,14 +51,14 @@ flex-shrink: 0; box-shadow: 0 1px 6px rgba(0,0,0,0.25);
 .section.active { display: block; }
 
 .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); border-left: 4px solid var(–jade); }
-.card h3 { color: var(–jade-dark); margin-bottom: 10px; font-size: 16px; }
+.card h3 { color: #1a3d25; margin-bottom: 10px; font-size: 18px; }
 
 select, input[type=text], input[type=password], input[type=date], input[type=number] {
 width: 100%; padding: 10px 12px; border: 2px solid #ddd; border-radius: 8px;
 font-family: ‘Nunito’, sans-serif; font-size: 14px; margin-bottom: 10px; transition: border 0.2s;
 }
 select:focus, input:focus { outline: none; border-color: var(–jade); }
-label { font-size: 13px; font-weight: 600; color: var(–navy); display: block; margin-bottom: 4px; }
+label { font-size: 15px; font-weight: 700; color: #1a1a1a; display: block; margin-bottom: 4px; }
 
 /* Monthly timetable */
 .timetable-grid { overflow-x: auto; }
@@ -79,8 +79,8 @@ td { padding: 5px 3px; text-align: center; border: 1px solid #e0e0e0; vertical-a
 .month-day-header.sat-hdr { background: var(–navy-light); }
 .slot-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #f0f0f0; background: white; }
 .slot-row:last-child { border-bottom: none; }
-.slot-time { font-size: 12px; font-weight: 700; min-width: 52px; color: var(–jade-dark); }
-.slot-cnt { font-size: 11px; color: #888; min-width: 36px; }
+.slot-time { font-size: 14px; font-weight: 800; min-width: 52px; color: #1a3d25; }
+.slot-cnt { font-size: 13px; color: #555; min-width: 36px; }
 
 #toast {
 position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
@@ -169,16 +169,16 @@ border-color: #1b5e20 !important;
 box-shadow: 0 2px 8px rgba(46,125,50,0.4) !important;
 }
 
-.info-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
-.info-label { color: #666; }
-.info-value { font-weight: 700; color: var(–jade-dark); }
+.info-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 15px; }
+.info-label { color: #444; font-weight: 600; }
+.info-value { font-weight: 800; color: #1a3d25; }
 
 .divider { border: none; border-top: 1px solid #e8e8e8; margin: 10px 0; }
 
-.booking-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8f8f8; border-radius: 8px; margin-bottom: 6px; font-size: 13px; }
+.booking-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8f8f8; border-radius: 8px; margin-bottom: 6px; font-size: 15px; }
 .booking-info { flex: 1; }
-.booking-time { font-weight: 700; color: var(–jade-dark); }
-.booking-day { color: #666; font-size: 12px; }
+.booking-time { font-weight: 700; color: #1a3d25; }
+.booking-day { color: #444; font-size: 14px; }
 
 #bulk-preview { background: #f0faf5; border-radius: 8px; padding: 8px 10px; font-size: 12px; color: #333; min-height: 36px; margin: 6px 0 10px; line-height: 1.8; white-space: pre-wrap; }
 
@@ -846,6 +846,13 @@ function renderBookGrid() {
 async function bookSlot(date, time) {
   if (!currentMember) { showToast('Please login first', 'warning'); return; }
 
+  // --- Fresh data fetch before checking rules (prevents race condition bypass) ---
+  try {
+    allBookings = await sbFetch('bookings', { filter: '?order=slot_date.asc,slot_time.asc' });
+    const fresh = allMembers.find(m => String(m.id) === String(currentMember.id));
+    if (fresh) currentMember = fresh;
+  } catch(e) { /* continue with cached data */ }
+
   // --- Rule 1: 1 booking per day ---
   const myDayBks = allBookings.filter(b =>
     String(b.member_id) === String(currentMember.id) && b.slot_date === date && !b.is_mia
@@ -1022,6 +1029,32 @@ async function promoteFromWaitlist(slot_date, slot_time) {
       await promoteFromWaitlist(slot_date, slot_time);
       return;
     }
+  }
+
+  // *** WEEKLY LIMIT CHECK for waitlist promotion ***
+  const weekDatesP   = getWeekDatesFor(slot_date);
+  const weekBksP     = allBookings.filter(b =>
+    String(b.member_id) === String(first.member_id) && weekDatesP.includes(b.slot_date) && !b.is_mia
+  );
+  const maxPerWeekP  = promotedMember.member_type === 'maintenance' ? 1 : 2;
+  if (weekBksP.length >= maxPerWeekP) {
+    // This member is already at their weekly cap – skip them, try next
+    await sbFetch('waitlist', { method: 'DELETE', filter: `?id=eq.${first.id}` });
+    await loadAll();
+    await promoteFromWaitlist(slot_date, slot_time);
+    return;
+  }
+
+  // *** DAY LIMIT CHECK for waitlist promotion ***
+  const dayBksP = allBookings.filter(b =>
+    String(b.member_id) === String(first.member_id) && b.slot_date === slot_date && !b.is_mia
+  );
+  if (dayBksP.length >= 1) {
+    // Already booked another slot this day – skip
+    await sbFetch('waitlist', { method: 'DELETE', filter: `?id=eq.${first.id}` });
+    await loadAll();
+    await promoteFromWaitlist(slot_date, slot_time);
+    return;
   }
 
   try {
