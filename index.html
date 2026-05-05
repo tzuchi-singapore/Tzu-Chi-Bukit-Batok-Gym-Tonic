@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tzu Chi SEEN(Bukit Batok) Gym Tonic</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Nunito:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
   :root {
@@ -232,12 +232,12 @@ font-size: 13px; border-left: 3px solid #ff9800;
 
 <div id="announcement-banner"></div>
 
-<div id="tabs">
-  <div class="tab active" onclick="showTab('book')" id="tab-book">📅 Book</div>
-  <div class="tab" onclick="showTab('my')" id="tab-my">👤 My Bookings</div>
-  <div class="tab" onclick="showTab('timetable')" id="tab-timetable">🗓 Timetable</div>
-  <div class="tab" onclick="showTab('waitlist')" id="tab-waitlist" style="display:none">⏳ Waitlist</div>
-  <div class="tab" onclick="showTab('admin')" id="tab-admin" style="display:none">⚙️ Admin</div>
+<div id="tabs" style="display:flex;background:#0a1628;overflow-x:auto;padding:8px 8px 0 8px;gap:4px;">
+  <div class="tab active" onclick="showTab('book')" id="tab-book" style="color:#0a1628!important;background:#FFE57A!important;border:2px solid #FFE57A!important;font-weight:900!important;">📅 Book</div>
+  <div class="tab" onclick="showTab('my')" id="tab-my" style="color:#ffffff!important;background:rgba(255,255,255,0.15)!important;border:2px solid rgba(255,255,255,0.3)!important;">👤 My Bookings</div>
+  <div class="tab" onclick="showTab('timetable')" id="tab-timetable" style="color:#ffffff!important;background:rgba(255,255,255,0.15)!important;border:2px solid rgba(255,255,255,0.3)!important;">🗓 Timetable</div>
+  <div class="tab" onclick="showTab('waitlist')" id="tab-waitlist" style="display:none;color:#ffffff!important;background:rgba(255,255,255,0.15)!important;border:2px solid rgba(255,255,255,0.3)!important;">⏳ Waitlist</div>
+  <div class="tab" onclick="showTab('admin')" id="tab-admin" style="display:none;color:#ffffff!important;background:rgba(255,255,255,0.15)!important;border:2px solid rgba(255,255,255,0.3)!important;">⚙️ Admin</div>
 </div>
 
 <!-- BOOK -->
@@ -1625,9 +1625,22 @@ async function getCourtBotReply(msg) {
 // ===================== UI HELPERS =====================
 function showTab(name) {
   document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => {
+    el.classList.remove('active');
+    // Force inactive style inline so cached CSS cannot override
+    el.style.color = '#ffffff';
+    el.style.background = 'rgba(255,255,255,0.15)';
+    el.style.border = '2px solid rgba(255,255,255,0.3)';
+    el.style.fontWeight = '800';
+  });
   document.getElementById(`section-${name}`).classList.add('active');
-  document.getElementById(`tab-${name}`).classList.add('active');
+  const activeTab = document.getElementById(`tab-${name}`);
+  activeTab.classList.add('active');
+  // Force active style inline
+  activeTab.style.color = '#0a1628';
+  activeTab.style.background = '#FFE57A';
+  activeTab.style.border = '2px solid #FFE57A';
+  activeTab.style.fontWeight = '900';
   if (name === 'my')                      renderMyBookings();
   if (name === 'timetable')               renderTimetable();
   if (name === 'waitlist')                renderMyWaitlist();
